@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.avatar.trip.plan.exception.RequiredArgumentException;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -16,7 +15,7 @@ class UserTest {
     void createUserSuccess(String username, String password) {
         User user = User.of(username, password);
 
-        assertAll(() -> assertThat(user.getUsername()).isEqualTo(username),
+        assertAll(() -> assertThat(user.getEmail()).isEqualTo(username),
             () -> assertThat(user.getPassword()).isEqualTo(password));
     }
 
@@ -26,4 +25,5 @@ class UserTest {
         assertThatThrownBy(() -> User.of(username, password))
             .isInstanceOf(RequiredArgumentException.class);
     }
+
 }

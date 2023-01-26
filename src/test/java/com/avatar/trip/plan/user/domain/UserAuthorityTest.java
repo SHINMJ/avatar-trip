@@ -16,22 +16,23 @@ class UserAuthorityTest {
 
     @Test
     void createUserAuthoritySuccess() {
-        UserAuthority userAuthority = UserAuthority.of(TEST_USER, TEST_AUTHORITY);
+        UserAuthority userAuthority = UserAuthority.of(TEST_AUTHORITY);
+        TEST_USER.addAuthority(userAuthority);
 
-        assertAll(() -> assertThat(userAuthority.equalsUser(TEST_USER)),
-            () -> assertThat(userAuthority.equalsAuthority(TEST_AUTHORITY)));
+        assertAll(
+            () -> assertTrue(userAuthority.equalsUser(TEST_USER)),
+            () -> assertTrue(userAuthority.equalsAuthority(TEST_AUTHORITY)),
+            () -> assertTrue(TEST_USER.containAuthority(userAuthority))
+        );
     }
 
     @ParameterizedTest
     @NullSource
     void createUserAuthorityNullFailed(Object input){
-        assertThatThrownBy(() -> UserAuthority.of(TEST_USER, (Authority) input))
+        assertThatThrownBy(() -> UserAuthority.of((Authority) input))
             .isInstanceOf(RequiredArgumentException.class)
             .hasMessageContaining("권한");
 
-        assertThatThrownBy(() -> UserAuthority.of((User) input, TEST_AUTHORITY))
-            .isInstanceOf(RequiredArgumentException.class)
-            .hasMessageContaining("사용자");
 
     }
 }

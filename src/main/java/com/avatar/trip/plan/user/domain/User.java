@@ -1,9 +1,12 @@
 package com.avatar.trip.plan.user.domain;
 
+import com.avatar.trip.plan.common.domain.BaseEntity;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,24 +17,27 @@ import lombok.Getter;
 import org.springframework.util.StringUtils;
 
 @Getter
-@Entity
-public class User {
+@Entity(name = "users")
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;
+    @Column(unique = true, nullable = false)
+    private String email;
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private String nickname;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAuthority> userAuthorities = new ArrayList<>();
 
     protected User(){}
 
-    private User(String username, String password) {
-        validate(username, password);
-        this.username = username;
+    private User(String email, String password) {
+        validate(email, password);
+        this.email = email;
         this.password = password;
     }
 
@@ -66,6 +72,10 @@ public class User {
         if(!userAuthority.equalsUser(this)){
             userAuthority.setUser(this);
         }
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
     @Override

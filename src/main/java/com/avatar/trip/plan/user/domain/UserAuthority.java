@@ -29,27 +29,25 @@ public class UserAuthority extends BaseEntity {
 
     protected UserAuthority(){}
 
-    private UserAuthority(User user, Authority authority){
-        validate(user, authority);
-        setUser(user);
+    private UserAuthority(Authority authority){
+        validate(authority);
         this.authority = authority;
     }
 
-    private void validate(User user, Authority authority){
-        if (user == null){
-            throw new RequiredArgumentException("사용자");
-        }
-
+    private void validate(Authority authority){
         if (authority == null){
             throw new RequiredArgumentException("권한");
         }
     }
 
-    public static UserAuthority of(User user, Authority authority){
-        return new UserAuthority(user, authority);
+    public static UserAuthority of( Authority authority){
+        return new UserAuthority(authority);
     }
 
     public boolean equalsUser(User user) {
+        if (this.user == null){
+            return false;
+        }
         return this.user.equals(user);
     }
 
@@ -66,7 +64,7 @@ public class UserAuthority extends BaseEntity {
         this.user = null;
     }
 
-    protected void setUser(User user){
+    public void setUser(User user){
         if(this.user != null){
             this.user.removeAuthority(this);
         }
