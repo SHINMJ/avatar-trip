@@ -74,6 +74,10 @@ public class UserAuthority extends BaseEntity {
         }
     }
 
+    public String getAuthorityName() {
+        return this.authority.getRoleName();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
