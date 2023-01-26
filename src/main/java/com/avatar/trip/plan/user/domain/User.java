@@ -41,9 +41,18 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    private void validate(String username, String password){
-        if (!StringUtils.hasLength(username)){
-            throw new RequiredArgumentException("이름");
+    private User(String email, String password, List<UserAuthority> userAuthorities){
+        validate(email, password);
+        this.email = email;
+        this.password = password;
+        for (UserAuthority userAuthority : userAuthorities) {
+            addAuthority(userAuthority);
+        }
+    }
+
+    private void validate(String email, String password){
+        if (!StringUtils.hasLength(email)){
+            throw new RequiredArgumentException("이메일");
         }
 
         if (!StringUtils.hasLength(password)) {
@@ -52,8 +61,12 @@ public class User extends BaseEntity {
 
     }
 
-    public static User of(String username, String password){
-        return new User(username, password);
+    public static User of(String email, String password){
+        return new User(email, password);
+    }
+
+    public static User of(String email, String password, List<UserAuthority> authorities){
+        return new User(email, password, authorities);
     }
 
     public void removeAuthority(UserAuthority userAuthority) {

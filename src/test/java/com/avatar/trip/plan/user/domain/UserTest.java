@@ -4,7 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.avatar.trip.plan.common.domain.Role;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -15,8 +18,10 @@ class UserTest {
     void createUserSuccess(String username, String password) {
         User user = User.of(username, password);
 
-        assertAll(() -> assertThat(user.getEmail()).isEqualTo(username),
-            () -> assertThat(user.getPassword()).isEqualTo(password));
+        assertAll(
+            () -> assertThat(user.getEmail()).isEqualTo(username),
+            () -> assertThat(user.getPassword()).isEqualTo(password)
+        );
     }
 
     @ParameterizedTest
@@ -26,4 +31,18 @@ class UserTest {
             .isInstanceOf(RequiredArgumentException.class);
     }
 
+    @Test
+    void createUserWithAuthorities() {
+        UserAuthority authAdmin = UserAuthority.of(Authority.from(Role.ADMIN));
+        UserAuthority authUser = UserAuthority.of(Authority.from(Role.USER));
+
+        User user = User.of("email", "11111", List.of(authAdmin, authUser));
+
+        assertAll(
+            () -> assertThat(user.getUserAuthorities().size()).isEqualTo(2),
+            () -> assertThat(user.getUserAuthorities()).containsExactly(authAdmin, authUser),
+            () -> assertTrue(authAdmin.equalsUser(user)),
+            () -> assertTrue(authUser.equalsUser(user))
+        );
+    }
 }

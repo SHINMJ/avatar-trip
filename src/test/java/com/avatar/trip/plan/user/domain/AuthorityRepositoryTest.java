@@ -1,5 +1,6 @@
 package com.avatar.trip.plan.user.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.avatar.trip.plan.common.domain.Role;
@@ -29,5 +30,19 @@ class AuthorityRepositoryTest {
         Authority findAdmin = optional.get();
 
         assertTrue(findAdmin.equals(save));
+    }
+
+    @Test
+    void findByRole() {
+        authorityRepository.save(Authority.from(Role.ADMIN));
+        authorityRepository.save(Authority.from(Role.USER));
+
+        Optional<Authority> byRole = authorityRepository.findByRole(Role.USER);
+
+        assertTrue(byRole.isPresent());
+
+        Authority authority = byRole.get();
+
+        assertThat(authority.getRole()).isEqualTo(Role.USER);
     }
 }

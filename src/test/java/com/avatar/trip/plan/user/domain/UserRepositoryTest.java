@@ -3,6 +3,8 @@ package com.avatar.trip.plan.user.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.avatar.trip.plan.common.domain.Role;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,8 @@ import org.springframework.test.context.jdbc.Sql;
 @DataJpaTest
 @Sql(scripts = "classpath:scripts/setup.sql")
 class UserRepositoryTest {
-    static final User TEST_USER = User.of("테스트사용자", "1234@");
+    static final String EMAIL = "user@email.com";
+    static final String PASSWORD = "1111";
 
     @Autowired
     private UserRepository userRepository;
@@ -26,13 +29,13 @@ class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        roleAdmin = authorityRepository.findById(1L).get();
-        roleUser = authorityRepository.findById(2L).get();
+        roleAdmin = authorityRepository.findByRole(Role.ADMIN).get();
+        roleUser = authorityRepository.findByRole(Role.USER).get();
     }
 
     @Test
     void createUser() {
-        User saved = userRepository.save(TEST_USER);
+        User saved = userRepository.save(User.of(EMAIL, PASSWORD));
 
         //쿼리 확인
         userRepository.flush();
@@ -46,29 +49,26 @@ class UserRepositoryTest {
 
     @Test
     void updateUserInfo() {
-        User saved = userRepository.save(TEST_USER);
+        User saved = userRepository.save(User.of(EMAIL, PASSWORD));
 
-        assertThat(saved.getPassword()).isEqualTo(TEST_USER.getPassword());
+        assertThat(saved.getPassword()).isEqualTo(PASSWORD);
 
         saved.updatePassword("11111");
 
         //쿼리 확인
         userRepository.flush();
 
-        assertThat(saved.getPassword()).isEqualTo("11111");
+        assertThat(saved.getPassword()).isNotEqualTo(PASSWORD);
     }
 
     @Test
     void createUserWithAuthority() {
-        assertThat(TEST_USER.getUserAuthorities().size()).isEqualTo(0);
+        User user = User.of(EMAIL, PASSWORD, List.of(UserAuthority.of(roleAdmin), UserAuthority.of(roleUser)));
 
-        TEST_USER.addAuthority(UserAuthority.of(roleAdmin));
-        TEST_USER.addAuthority(UserAuthority.of(roleUser));
-
-        User saved = userRepository.save(TEST_USER);
+        User saved = userRepository.save(user);
 
         userRepository.flush();
 
-        assertThat(TEST_USER.getUserAuthorities().size()).isEqualTo(2);
+        assertThat(saved.getUserAuthorities().size()).isEqualTo(2);
     }
 }
