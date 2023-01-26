@@ -71,4 +71,15 @@ class UserRepositoryTest {
 
         assertThat(saved.getUserAuthorities().size()).isEqualTo(2);
     }
+
+    @Test
+    void findByEmail() {
+        User saved = userRepository.save(User.of(EMAIL, PASSWORD));
+
+        Optional<User> byEmail = userRepository.findByEmail(EMAIL);
+
+        assertTrue(byEmail.isPresent());
+
+
+    }
 }
