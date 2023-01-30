@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
@@ -30,7 +31,11 @@ public class User extends BaseEntity {
 
     private String nickname;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private String refreshToken;
+
+    private boolean activate = true;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAuthority> userAuthorities = new ArrayList<>();
 
     protected User(){}
@@ -41,10 +46,11 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    private User(String email, String password, List<UserAuthority> userAuthorities){
+    private User(String email, String password, String nickname, List<UserAuthority> userAuthorities){
         validate(email, password);
         this.email = email;
         this.password = password;
+        this.nickname = nickname;
         for (UserAuthority userAuthority : userAuthorities) {
             addAuthority(userAuthority);
         }
@@ -65,8 +71,8 @@ public class User extends BaseEntity {
         return new User(email, password);
     }
 
-    public static User of(String email, String password, List<UserAuthority> authorities){
-        return new User(email, password, authorities);
+    public static User of(String email, String password, String nickname, List<UserAuthority> authorities){
+        return new User(email, password, nickname, authorities);
     }
 
     public void removeAuthority(UserAuthority userAuthority) {
@@ -87,8 +93,21 @@ public class User extends BaseEntity {
         }
     }
 
-    public void updatePassword(String password) {
+    public void updateInfo(String password, String nickname) {
         this.password = password;
+        this.nickname = nickname;
+    }
+
+    public void updateActivate(boolean activate){
+        this.activate = activate;
+    }
+
+    public void updateRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
+
+    public boolean isActivate(){
+        return this.activate;
     }
 
     @Override

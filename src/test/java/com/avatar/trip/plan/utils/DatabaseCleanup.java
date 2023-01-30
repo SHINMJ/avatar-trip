@@ -63,7 +63,7 @@ public class DatabaseCleanup implements InitializingBean {
 
         //관리자 생성
         String encodePassword = encoder.encode(ADMIN_PASSWORD);
-        User admin = User.of(ADMIN_EMAIL, encodePassword, List.of(UserAuthority.of(roleAdmin)));
+        User admin = User.of(ADMIN_EMAIL, encodePassword, "admin", List.of(UserAuthority.of(roleAdmin)));
         entityManager.persist(admin);
 
         entityManager.flush();

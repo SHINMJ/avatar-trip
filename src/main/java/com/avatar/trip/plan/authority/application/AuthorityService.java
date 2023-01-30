@@ -32,13 +32,15 @@ public class AuthorityService {
     }
 
     @Transactional(readOnly = true)
-    public AuthorityResponse findByRole(String role) {
-        Authority authority = repository.findByRole(Role.findByKey(role))
-            .orElseThrow(() -> new NotFoundException("해당 권한을 찾을 수 없습니다."));
-
+    public AuthorityResponse findByRoleId(String roleId) {
+        Authority authority = findByRole(Role.findByKey(roleId));
         return AuthorityResponse.of(authority);
     }
 
+    public Authority findByRole(Role role){
+        return  repository.findByRole(role)
+            .orElseThrow(() -> new NotFoundException("해당 권한을 찾을 수 없습니다."));
+    }
 
     public void delete(Long id) {
         Authority authority = findById(id);

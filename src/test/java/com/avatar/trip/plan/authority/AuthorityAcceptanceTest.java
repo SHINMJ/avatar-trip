@@ -1,22 +1,18 @@
 package com.avatar.trip.plan.authority;
 
-import static com.avatar.trip.plan.auth.AuthAcceptanceTest.관리자_로그인_되어있음;
+import static com.avatar.trip.plan.auth.AuthAcceptanceTest.관리자_로그인;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.avatar.trip.plan.AcceptanceTest;
 import com.avatar.trip.plan.authority.dto.AuthorityRequest;
 import io.restassured.RestAssured;
-import io.restassured.authentication.OAuthSignature;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.transaction.annotation.Transactional;
 
 @DisplayName("권한 관리")
 public class AuthorityAcceptanceTest extends AcceptanceTest {
@@ -27,7 +23,7 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
     void manageAuthority() {
         String role = "ROLE_USER";
         //관리자 로그인 되어 있음.
-        String accessToken = 관리자_로그인_되어있음();
+        String accessToken = 관리자_로그인();
 
         //권한 생성
         ExtractableResponse<Response> response = 권한_생성_요청(accessToken, role, "");

@@ -38,7 +38,7 @@ public class AuthorityController {
 
     @GetMapping("/{roleId}")
     public ResponseEntity<AuthorityResponse> findByRole(@PathVariable String roleId){
-        AuthorityResponse response = service.findByRole(roleId);
+        AuthorityResponse response = service.findByRoleId(roleId);
         return ResponseEntity.ok(response);
     }
 

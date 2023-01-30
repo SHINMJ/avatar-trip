@@ -3,6 +3,9 @@ package com.avatar.trip.plan.auth.application;
 import com.avatar.trip.plan.auth.dto.LoginRequest;
 import com.avatar.trip.plan.auth.dto.TokenResponse;
 import com.avatar.trip.plan.auth.config.TokenProvider;
+import com.avatar.trip.plan.user.application.UserService;
+import com.avatar.trip.plan.user.dto.UserRequest;
+import com.avatar.trip.plan.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +20,7 @@ public class AuthService {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
+    private final UserService userService;
 
     public TokenResponse login(LoginRequest loginRequest){
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -29,5 +33,10 @@ public class AuthService {
         String refreshToken = tokenProvider.createRefreshToken(authentication);
 
         return TokenResponse.of(accessToken, refreshToken);
+    }
+
+    public Long join(UserRequest userRequest) {
+        UserResponse user = userService.create(userRequest);
+        return user.getId();
     }
 }

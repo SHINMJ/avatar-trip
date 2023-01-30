@@ -3,6 +3,8 @@ package com.avatar.trip.plan.user.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.avatar.trip.plan.authority.domain.Authority;
+import com.avatar.trip.plan.authority.domain.AuthorityRepository;
 import com.avatar.trip.plan.common.domain.Role;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 class UserRepositoryTest {
     static final String EMAIL = "user@email.com";
     static final String PASSWORD = "1111";
+    static final String NICKNAME = "test";
 
     @Autowired
     private UserRepository userRepository;
@@ -53,7 +56,7 @@ class UserRepositoryTest {
 
         assertThat(saved.getPassword()).isEqualTo(PASSWORD);
 
-        saved.updatePassword("11111");
+        saved.updateInfo( "11111", "test");
 
         //쿼리 확인
         userRepository.flush();
@@ -63,7 +66,7 @@ class UserRepositoryTest {
 
     @Test
     void createUserWithAuthority() {
-        User user = User.of(EMAIL, PASSWORD, List.of(UserAuthority.of(roleAdmin), UserAuthority.of(roleUser)));
+        User user = User.of(EMAIL, PASSWORD, NICKNAME, List.of(UserAuthority.of(roleAdmin), UserAuthority.of(roleUser)));
 
         User saved = userRepository.save(user);
 
@@ -79,7 +82,5 @@ class UserRepositoryTest {
         Optional<User> byEmail = userRepository.findByEmail(EMAIL);
 
         assertTrue(byEmail.isPresent());
-
-
     }
 }

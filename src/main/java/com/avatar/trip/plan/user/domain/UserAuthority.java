@@ -1,5 +1,6 @@
 package com.avatar.trip.plan.user.domain;
 
+import com.avatar.trip.plan.authority.domain.Authority;
 import com.avatar.trip.plan.common.domain.BaseEntity;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
 import java.util.Objects;
@@ -75,7 +76,7 @@ public class UserAuthority extends BaseEntity {
     }
 
     public String getAuthorityName() {
-        return this.authority.getRoleName();
+        return this.authority.getRoleId();
     }
 
     @Override
@@ -95,4 +96,12 @@ public class UserAuthority extends BaseEntity {
         return Objects.hash(id);
     }
 
+    @Override
+    public String toString() {
+        return "UserAuthority{" +
+            "id=" + id +
+            ", user=" + user.getEmail() +
+            ", authority=" + authority.getName() +
+            '}';
+    }
 }

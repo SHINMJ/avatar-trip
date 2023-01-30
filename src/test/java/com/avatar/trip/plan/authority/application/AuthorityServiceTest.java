@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.avatar.trip.plan.authority.domain.Authority;
@@ -78,7 +77,7 @@ class AuthorityServiceTest {
         when(authorityRepository.findByRole(Role.USER))
             .thenReturn(Optional.of(userRole));
 
-        AuthorityResponse response = authorityService.findByRole("ROLE_USER");
+        AuthorityResponse response = authorityService.findByRoleId("ROLE_USER");
 
         assertThat(response.getRoleId()).isEqualTo(Role.USER.getKey());
     }

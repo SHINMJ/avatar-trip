@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.avatar.trip.plan.authority.domain.Authority;
 import com.avatar.trip.plan.common.domain.Role;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
 import java.util.List;
@@ -36,7 +37,7 @@ class UserTest {
         UserAuthority authAdmin = UserAuthority.of(Authority.from(Role.ADMIN));
         UserAuthority authUser = UserAuthority.of(Authority.from(Role.USER));
 
-        User user = User.of("email", "11111", List.of(authAdmin, authUser));
+        User user = User.of("email", "11111", "test", List.of(authAdmin, authUser));
 
         assertAll(
             () -> assertThat(user.getUserAuthorities().size()).isEqualTo(2),
@@ -44,5 +45,15 @@ class UserTest {
             () -> assertTrue(authAdmin.equalsUser(user)),
             () -> assertTrue(authUser.equalsUser(user))
         );
+    }
+
+    @Test
+    void updateActive() {
+        User user = User.of("email", "11111");
+        assertTrue(user.isActivate());
+
+        user.updateActivate(false);
+
+        assertFalse(user.isActivate());
     }
 }
