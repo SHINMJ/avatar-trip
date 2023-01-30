@@ -1,10 +1,9 @@
-package com.avatar.trip.plan.user.domain;
+package com.avatar.trip.plan.authority.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.avatar.trip.plan.common.domain.Role;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

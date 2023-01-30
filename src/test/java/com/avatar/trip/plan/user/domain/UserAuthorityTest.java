@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.avatar.trip.plan.authority.domain.Authority;
 import com.avatar.trip.plan.common.domain.Role;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
 import org.junit.jupiter.api.Test;
