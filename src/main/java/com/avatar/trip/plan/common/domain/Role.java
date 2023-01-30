@@ -7,11 +7,12 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Role {
-    ANONYMOUS("ROLE_ANONYMOUS"),
-    USER("ROLE_USER"),
-    ADMIN("ROLE_ADMIN");
+    ANONYMOUS("ROLE_ANONYMOUS", "손님"),
+    USER("ROLE_USER", "사용자"),
+    ADMIN("ROLE_ADMIN", "관리자");
 
     private final String key;
+    private final String title;
 
     public static Role findByKey(String key){
         return Arrays.stream(Role.values())

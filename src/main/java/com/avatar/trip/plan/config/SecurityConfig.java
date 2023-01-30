@@ -74,7 +74,8 @@ public class SecurityConfig {
                 .authenticationEntryPoint(authenticationEntryPoint)
             .and()
             .authorizeHttpRequests()
-                .mvcMatchers("/auth/**").permitAll()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/authorities/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             .and()
             .apply(new JwtSecurityConfig(tokenProvider()));

@@ -19,7 +19,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final String AUTH_ENDPOINT_PREFIX = "/auth";
+    private static final String AUTH_ENDPOINT_PREFIX = "/auth/";
 
     private final TokenProvider tokenProvider;
 
@@ -34,6 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = resolveToken(request);
         log.debug("token = {}", token);
+
         if (token == null){
             sendError(response, "토큰이 없습니다.");
             return;

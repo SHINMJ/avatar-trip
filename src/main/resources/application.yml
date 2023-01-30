@@ -15,5 +15,5 @@ spring:
 jwt:
   secret: YXZhdGFydHJpcGF1dGhvcml6YXRpb25qd3RtYW5hZ2VzZWNyZXRrZXkK
   header: Authorization
-  expired-in: 600 # 10 min
-  refresh-expired-in: 86400 # 24 hour
+  expired-in: 600000 # 10 min
+  refresh-expired-in: 86400000 # 24 hour

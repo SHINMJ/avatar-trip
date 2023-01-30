@@ -9,6 +9,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("로그인 관련 기능")
@@ -22,6 +23,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> loginRes = 로그인_요청(ADMIN_EMAIL, ADMIN_PASSWORD);
 
         assertThat(loginRes.jsonPath().getString("accessToken")).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 사용자 없음")
+    void login_failed_nouser() {
+        ExtractableResponse<Response> response = 로그인_요청("test", ADMIN_PASSWORD);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password){

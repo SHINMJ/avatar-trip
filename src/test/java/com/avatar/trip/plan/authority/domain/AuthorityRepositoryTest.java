@@ -8,6 +8,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 
 @DataJpaTest
 class AuthorityRepositoryTest {
@@ -43,5 +45,22 @@ class AuthorityRepositoryTest {
         Authority authority = byRole.get();
 
         assertThat(authority.getRole()).isEqualTo(Role.USER);
+    }
+
+    @Test
+    void findSlice() {
+        Authority admin = authorityRepository.save(Authority.from(Role.ADMIN));
+        Authority user = authorityRepository.save(Authority.from(Role.USER));
+
+        authorityRepository.flush();
+
+        Slice<Authority> sliceAll = authorityRepository.findAllBy(PageRequest.of(0, 10));
+
+        System.out.println(sliceAll.getContent());
+        assertTrue(sliceAll.hasContent());
+        assertAll(
+            () -> assertThat(sliceAll.getNumberOfElements()).isEqualTo(2),
+            () -> assertThat(sliceAll.getContent()).contains(admin, user)
+        );
     }
 }
