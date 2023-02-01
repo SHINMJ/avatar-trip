@@ -2,9 +2,11 @@ package com.avatar.trip.plan.auth;
 
 import static com.avatar.trip.plan.authority.AuthorityAcceptanceTest.권한_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.avatar.trip.plan.AcceptanceTest;
 import com.avatar.trip.plan.auth.dto.LoginRequest;
+import com.avatar.trip.plan.auth.dto.TokenRequest;
 import com.avatar.trip.plan.user.dto.UserRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -51,6 +53,41 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(loginResponse.jsonPath().getString("accessToken")).isNotEmpty();
     }
 
+    @Test
+    @DisplayName("reissue 성공")
+    void refresh_success() {
+        // 로그인 되어 있음.
+        ExtractableResponse<Response> login = 로그인_요청(ADMIN_EMAIL, ADMIN_PASSWORD);
+        String refreshToken = login.jsonPath().getString("refreshToken");
+        String accessToken = login.jsonPath().getString("accessToken");
+
+        // refresh
+        ExtractableResponse<Response> response = reissue(accessToken, refreshToken);
+
+        // 새로운 토큰 발급 받음.
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        String newRefreshToken = response.jsonPath().getString("refreshToken");
+        String newAccessToken = response.jsonPath().getString("accessToken");
+
+        assertAll(
+            () -> assertThat(newAccessToken).isNotEqualTo(accessToken),
+            () -> assertThat(newRefreshToken).isNotEqualTo(refreshToken)
+        );
+    }
+
+    @Test
+    @DisplayName("reissue 실패")
+    void refresh_failed() {
+        // 로그인 되어 있음.
+        ExtractableResponse<Response> login = 로그인_요청(ADMIN_EMAIL, ADMIN_PASSWORD);
+        String accessToken = login.jsonPath().getString("accessToken");
+
+        // refresh
+        ExtractableResponse<Response> response = reissue(accessToken, "invalid");
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     public static ExtractableResponse<Response> 회원가입_요청(String email, String password, String nickname){
         return RestAssured
             .given().log().all()
@@ -78,5 +115,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static String 관리자_로그인(){
         ExtractableResponse<Response> response = 로그인_요청(ADMIN_EMAIL, ADMIN_PASSWORD);
         return response.jsonPath().getString("accessToken");
+    }
+
+    ExtractableResponse<Response> reissue(String accessToken, String refreshToken){
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(new TokenRequest(accessToken, refreshToken))
+            .when().post(ENDPOINT_PREFIX + "/refresh")
+            .then().log().all()
+            .extract();
     }
 }

@@ -110,6 +110,14 @@ public class User extends BaseEntity {
         return this.activate;
     }
 
+    public boolean isEmptyRefreshToken() {
+        return !StringUtils.hasText(this.refreshToken);
+    }
+
+    public boolean equalRefreshToken(String refreshToken) {
+        return refreshToken.equals(this.refreshToken);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -126,4 +134,5 @@ public class User extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

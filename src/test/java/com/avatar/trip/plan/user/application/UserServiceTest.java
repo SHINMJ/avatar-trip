@@ -1,6 +1,7 @@
 package com.avatar.trip.plan.user.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -11,6 +12,7 @@ import com.avatar.trip.plan.authority.application.AuthorityService;
 import com.avatar.trip.plan.common.domain.Role;
 import com.avatar.trip.plan.authority.domain.Authority;
 import com.avatar.trip.plan.authority.domain.AuthorityRepository;
+import com.avatar.trip.plan.exception.TokenValidationException;
 import com.avatar.trip.plan.user.domain.User;
 import com.avatar.trip.plan.user.domain.UserAuthority;
 import com.avatar.trip.plan.user.domain.UserRepository;
@@ -112,6 +114,43 @@ class UserServiceTest {
         UserResponse response = userService.updateActivate(1L, false);
 
         assertFalse(response.isActivate());
+    }
 
+    @Test
+    void updateRefreshToken() {
+        User user = User.of(TEST_EMAIL, TEST_PASSWORD);
+
+        when(userRepository.findByEmail(anyString()))
+            .thenReturn(Optional.of(user));
+        when(userRepository.save(any()))
+            .thenReturn(user);
+
+        userService.updateRefreshToken(TEST_EMAIL, "refreshToken");
+
+        assertThat(user.getRefreshToken()).isNotEmpty();
+    }
+
+    @Test
+    void checkRefreshToken_logout() {
+        User user = User.of(TEST_EMAIL, TEST_PASSWORD);
+        when(userRepository.findByEmail(anyString()))
+            .thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() -> userService.checkRefreshTokenByEmail(TEST_EMAIL, "invalid"))
+            .isInstanceOf(TokenValidationException.class)
+            .hasMessage("로그아웃한 사용자 입니다.");
+
+    }
+
+    @Test
+    void checkRefreshToken_notValid() {
+        User user = User.of(TEST_EMAIL, TEST_PASSWORD);
+        user.updateRefreshToken("refreshToken");
+        when(userRepository.findByEmail(anyString()))
+            .thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() -> userService.checkRefreshTokenByEmail(TEST_EMAIL, "invalid"))
+            .isInstanceOf(TokenValidationException.class)
+            .hasMessage("토큰이 일치하지 않습니다.");
     }
 }

@@ -2,6 +2,7 @@ package com.avatar.trip.plan.auth.ui;
 
 import com.avatar.trip.plan.auth.application.AuthService;
 import com.avatar.trip.plan.auth.dto.LoginRequest;
+import com.avatar.trip.plan.auth.dto.TokenRequest;
 import com.avatar.trip.plan.auth.dto.TokenResponse;
 import com.avatar.trip.plan.user.dto.UserRequest;
 import java.net.URI;
@@ -30,5 +31,12 @@ public class AuthController {
         Long id = authService.join(userRequest);
 
         return ResponseEntity.created(URI.create("/users/"+id)).build();
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponse> refresh(@RequestBody TokenRequest tokenRequest){
+        TokenResponse response = authService.refresh(tokenRequest);
+
+        return ResponseEntity.ok(response);
     }
 }
