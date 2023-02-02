@@ -38,7 +38,7 @@ public class AuthorityService {
     }
 
     public Authority findByRole(Role role){
-        return  repository.findByRole(role)
+        return repository.findByRole(role)
             .orElseThrow(() -> new NotFoundException("해당 권한을 찾을 수 없습니다."));
     }
 
