@@ -1,6 +1,7 @@
 package com.avatar.trip.plan.theme;
 
 import static com.avatar.trip.plan.auth.AuthAcceptanceTest.관리자_로그인;
+import static com.avatar.trip.plan.auth.AuthAcceptanceTest.사용자_로그인;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.avatar.trip.plan.AcceptanceTest;
@@ -24,6 +25,20 @@ public class ThemeAcceptanceTest extends AcceptanceTest {
         String theme = "아이와";
         boolean isAdmin = true;
 
+        manageTheme(accessToken, theme, isAdmin);
+    }
+
+    @Test
+    @DisplayName("사용자 테마 관리")
+    void manageThemeOfUser() {
+        String accessToken = 사용자_로그인("user@email.com", "aaaaa", "user");
+        String theme = "아이와";
+        boolean isAdmin = false;
+
+        manageTheme(accessToken, theme, isAdmin);
+    }
+
+    private void manageTheme(String accessToken, String theme, boolean isAdmin){
         // 테마 등록
         Long id = 테마_등록_되어있음(accessToken, theme, isAdmin);
 
@@ -35,7 +50,7 @@ public class ThemeAcceptanceTest extends AcceptanceTest {
         // 테마 목록 조회
         ExtractableResponse<Response> listResponse = 테마_목록_조회(accessToken, isAdmin);
         조회됨(listResponse);
-        assertThat(listResponse.jsonPath().getInt("totalElements")).isEqualTo(1);
+        assertThat(listResponse.jsonPath().getList("content").size()).isEqualTo(1);
 
         // 테마 삭제
         ExtractableResponse<Response> deleteResponse = 테마_삭제_요청(accessToken, id);
@@ -44,7 +59,7 @@ public class ThemeAcceptanceTest extends AcceptanceTest {
         // 테마 목록 조회
         ExtractableResponse<Response> listResponse2 = 테마_목록_조회(accessToken, isAdmin);
         조회됨(listResponse2);
-        assertThat(listResponse2.jsonPath().getInt("totalElements")).isEqualTo(0);
+        assertThat(listResponse2.jsonPath().getList("content").size()).isEqualTo(0);
     }
 
     public static Long 테마_등록_되어있음(String accessToken, String theme, boolean isAdmin){

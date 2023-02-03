@@ -48,7 +48,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 회원가입_요청("test@email.com", "11111", "test사용자");
 
         //then
-        회원가입됨(response);
+        등록됨(response);
         ExtractableResponse<Response> loginResponse = 로그인_요청("test@email.com", "11111");
         assertThat(loginResponse.jsonPath().getString("accessToken")).isNotEmpty();
     }
@@ -98,10 +98,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 회원가입됨(ExtractableResponse<Response> response){
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
     public static ExtractableResponse<Response> 로그인_요청(String email, String password){
         return RestAssured
             .given().log().all()
@@ -115,6 +111,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static String 관리자_로그인(){
         ExtractableResponse<Response> response = 로그인_요청(ADMIN_EMAIL, ADMIN_PASSWORD);
         return response.jsonPath().getString("accessToken");
+    }
+
+    public static String 사용자_로그인(String email, String password, String nickname){
+        ExtractableResponse<Response> join = 회원가입_요청(email, password, nickname);
+        등록됨(join);
+        ExtractableResponse<Response> login = 로그인_요청(email, password);
+        return login.jsonPath().getString("accessToken");
     }
 
     ExtractableResponse<Response> reissue(String accessToken, String refreshToken){

@@ -2,7 +2,7 @@ package com.avatar.trip.plan;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.avatar.trip.plan.utils.DatabaseCleanup;
+import com.avatar.trip.plan.utils.DatabaseInitialize;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -24,17 +24,17 @@ public class AcceptanceTest {
     int port;
 
     @Autowired
-    private DatabaseCleanup databaseCleanup;
+    private DatabaseInitialize databaseInitialize;
 
     @BeforeEach
     public void setUp() {
         if(RestAssured.port == RestAssured.UNDEFINED_PORT){
             RestAssured.port = port;
-            databaseCleanup.afterPropertiesSet();
+            databaseInitialize.afterPropertiesSet();
         }
-        databaseCleanup.execute();
+        databaseInitialize.execute();
 
-        databaseCleanup.saveInitData();
+        databaseInitialize.saveInitData();
     }
 
     public static void 등록됨(ExtractableResponse<Response> response){

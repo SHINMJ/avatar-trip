@@ -26,8 +26,8 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
         String accessToken = 관리자_로그인();
 
         //권한 생성
-        ExtractableResponse<Response> response = 권한_생성_요청(accessToken, role, "");
-        권한_생성_됨(response);
+        ExtractableResponse<Response> response = 권한_생성_요청(accessToken, role, "customUser");
+        등록됨(response);
 
         //권한 목록 조회
         ExtractableResponse<Response> find = 권한_목록_조회(accessToken, 10, 0);
@@ -39,7 +39,7 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
 
         //권한 삭제
         ExtractableResponse<Response> delete = 권한_삭제_요청(accessToken, roleUser.jsonPath().getLong("id"));
-        권한_삭제됨(delete);
+        삭제됨(delete);
     }
 
     public static ExtractableResponse<Response> 권한_생성_요청(String accessToken, String roleId, String name){
@@ -52,10 +52,6 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
             .when().post(END_POINT)
             .then().log().all()
             .extract();
-    }
-
-    public static void 권한_생성_됨(ExtractableResponse<Response> response){
-       assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static ExtractableResponse<Response> 권한_조회(String accessToken, String role){
@@ -103,7 +99,4 @@ public class AuthorityAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private void 권한_삭제됨(ExtractableResponse<Response> response){
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
 }

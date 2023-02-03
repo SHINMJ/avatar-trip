@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @ActiveProfiles(profiles = "test")
-public class DatabaseCleanup implements InitializingBean {
+public class DatabaseInitialize implements InitializingBean {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -59,7 +59,9 @@ public class DatabaseCleanup implements InitializingBean {
 
         //관리자 권한 생성
         Authority roleAdmin = Authority.from(Role.ADMIN);
+        Authority roleUser = Authority.from(Role.USER);
         entityManager.persist(roleAdmin);
+        entityManager.persist(roleUser);
 
         //관리자 생성
         String encodePassword = encoder.encode(ADMIN_PASSWORD);
