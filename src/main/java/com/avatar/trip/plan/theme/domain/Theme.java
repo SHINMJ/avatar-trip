@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Theme extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Embedded
@@ -56,5 +56,9 @@ public class Theme extends BaseEntity {
         if(!isOwner(ownerId)){
             throw new CannotDeleteException("다른 사용자의 테마를 사용할 수 없습니다.");
         }
+    }
+
+    public String getThemeName(){
+        return this.name.toString();
     }
 }

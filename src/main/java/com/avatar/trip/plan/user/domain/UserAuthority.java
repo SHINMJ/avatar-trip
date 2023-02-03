@@ -2,6 +2,7 @@ package com.avatar.trip.plan.user.domain;
 
 import com.avatar.trip.plan.authority.domain.Authority;
 import com.avatar.trip.plan.common.domain.BaseEntity;
+import com.avatar.trip.plan.common.domain.Role;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
 import java.util.Objects;
 import javax.persistence.Entity;
@@ -54,6 +55,10 @@ public class UserAuthority extends BaseEntity {
 
     public boolean equalsAuthority(Authority authority) {
         return this.authority.equals(authority);
+    }
+
+    public boolean equalRole(Role role){
+        return this.authority.equalRole(role);
     }
 
     public void removeUser() {

@@ -15,7 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
-@Sql(scripts = "classpath:scripts/setup.sql")
+@Sql(scripts = "classpath:scripts/userTestSetup.sql")
 class UserRepositoryTest {
     static final String EMAIL = "user@email.com";
     static final String PASSWORD = "1111";

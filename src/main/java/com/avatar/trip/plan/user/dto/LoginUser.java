@@ -1,5 +1,6 @@
 package com.avatar.trip.plan.user.dto;
 
+import com.avatar.trip.plan.common.domain.Role;
 import com.avatar.trip.plan.user.domain.User;
 import com.avatar.trip.plan.user.infra.CustomUserDetails;
 
@@ -8,6 +9,7 @@ public class LoginUser extends CustomUserDetails {
 
     public LoginUser(User user) {
         super(user);
+        this.user = user;
     }
 
     public Long getId(){
@@ -17,4 +19,10 @@ public class LoginUser extends CustomUserDetails {
     public String getNickname(){
         return user.getNickname();
     }
+
+    public boolean isAdmin(){
+        return user.getUserAuthorities().stream()
+            .anyMatch(userAuthority -> userAuthority.equalRole(Role.ADMIN));
+    }
+
 }

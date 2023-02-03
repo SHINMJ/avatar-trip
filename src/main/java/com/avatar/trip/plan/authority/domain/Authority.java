@@ -49,6 +49,10 @@ public class Authority extends BaseEntity {
         return this.role.getKey();
     }
 
+    public boolean equalRole(Role role){
+        return this.role.equals(role);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

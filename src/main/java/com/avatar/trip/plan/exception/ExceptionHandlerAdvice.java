@@ -60,6 +60,12 @@ public class ExceptionHandlerAdvice {
         return errorResponse(ErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    protected ResponseEntity<ErrorResponse> handleUnauthorizedException(UnauthorizedException e) {
+        log.error("handleUnauthorizedException", e);
+        return errorResponse(ErrorResponse.of(e.getMessage(), HttpStatus.UNAUTHORIZED));
+    }
+
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
         log.error("handleBusinessException", e);

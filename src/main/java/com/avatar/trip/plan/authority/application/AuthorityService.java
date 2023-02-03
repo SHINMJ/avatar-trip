@@ -6,7 +6,6 @@ import com.avatar.trip.plan.authority.dto.AuthorityRequest;
 import com.avatar.trip.plan.authority.dto.AuthorityResponse;
 import com.avatar.trip.plan.common.domain.Role;
 import com.avatar.trip.plan.exception.NotFoundException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
