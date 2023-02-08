@@ -5,6 +5,8 @@ import com.avatar.trip.plan.exception.RequiredArgumentException;
 import com.avatar.trip.plan.theme.domain.Theme;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,11 +26,11 @@ public class ScheduleTheme extends BaseEntity {
     private Long id;
 
     @ManyToOne()
-    @JoinColumn(name = "schedule_id")
+    @JoinColumn(name = "schedule_id", foreignKey = @ForeignKey(name = "fk_schedule_theme_schedule"))
     private Schedule schedule;
 
-    @ManyToOne()
-    @JoinColumn(name = "theme_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "theme_id", foreignKey = @ForeignKey(name = "fk_schedule_theme_theme"))
     private Theme theme;
 
     private ScheduleTheme(Theme theme){

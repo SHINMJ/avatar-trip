@@ -34,23 +34,25 @@ public class Schedule extends BaseEntity {
 
     private Long placeId;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ScheduleTheme> themes = new ArrayList<>();
+    @Embedded
+    private ScheduleThemes themes = new ScheduleThemes();
 
     private Long ownerId;
 
 //    @OneToMany(mappedBy = "schedule", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
 //    private List<Party> parties;
 
-    private Schedule(Long placeId, List<ScheduleTheme> themes, Period period) {
-        validate(period, placeId, themes);
+    private Schedule(Long ownerId, Long placeId, List<ScheduleTheme> themes, Period period) {
+        validate(ownerId, period, placeId, themes);
+        this.ownerId = ownerId;
         this.placeId = placeId;
         setThemes(themes);
         this.period = period;
     }
 
-    private Schedule(Long placeId, List<ScheduleTheme> themes, Period period, PeriodDate periodDate) {
-        validate(period, placeId, themes);
+    private Schedule(Long ownerId, Long placeId, List<ScheduleTheme> themes, Period period, PeriodDate periodDate) {
+        validate(ownerId, period, placeId, themes);
+        this.ownerId = ownerId;
         this.placeId = placeId;
         setThemes(themes);
         this.period = period;
@@ -58,17 +60,17 @@ public class Schedule extends BaseEntity {
     }
 
 
-    public static Schedule of(Long placeId, List<ScheduleTheme> themes, Period period) {
-        return new Schedule(placeId, themes, period);
+    public static Schedule of(Long ownerId, Long placeId, List<ScheduleTheme> themes, Period period) {
+        return new Schedule(ownerId, placeId, themes, period);
     }
 
-    public static Schedule ofDate(Long placeId, List<ScheduleTheme> themes, PeriodDate periodDate) {
+    public static Schedule ofDate(Long ownerId, Long placeId, List<ScheduleTheme> themes, PeriodDate periodDate) {
         validatePeriodDate(periodDate);
-        return new Schedule(placeId, themes, periodDate.toPeriod(), periodDate);
+        return new Schedule(ownerId, placeId, themes, periodDate.toPeriod(), periodDate);
     }
 
     public void addTheme(ScheduleTheme theme) {
-        themes.add(theme);
+        themes.addTheme(theme);
         if(!theme.equalSchedule(this)){
             theme.setSchedule(this);
         }
@@ -91,7 +93,11 @@ public class Schedule extends BaseEntity {
         }
     }
 
-    private void validate(Period period, Long placeId, List<ScheduleTheme> themes) {
+    private void validate(Long ownerId, Period period, Long placeId, List<ScheduleTheme> themes) {
+        if (ownerId == null){
+            throw new RequiredArgumentException("사용자");
+        }
+
         if (period == null){
             throw new RequiredArgumentException("기간");
         }

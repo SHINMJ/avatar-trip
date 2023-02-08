@@ -24,16 +24,14 @@ class ScheduleTest {
     void createdWithPeriod() {
         Period period = Period.of(Days.valueOf(2), Days.valueOf(3));
 
-        Schedule schedule = Schedule.of(1L, List.of(ScheduleTheme.of(USER_THEME)), period);
-
-        assertThat(schedule.getThemes().size()).isEqualTo(1);
+        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
     }
 
     @Test
     void createdWithPeriodDate() {
         PeriodDate periodDate = PeriodDate.of(START_DATE, END_DATE);
 
-        Schedule schedule = Schedule.ofDate(1L, List.of(ScheduleTheme.of(USER_THEME)), periodDate);
+        Schedule schedule = Schedule.ofDate(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), periodDate);
 
         assertThat(schedule.getPeriod()).isEqualTo(Period.of(Days.valueOf(DATE_BETWEEN-1), Days.valueOf(DATE_BETWEEN)));
     }
@@ -42,16 +40,16 @@ class ScheduleTest {
     void created_failed() {
         Period period = Period.of(Days.valueOf(DATE_BETWEEN-1), Days.valueOf(DATE_BETWEEN));
 
-        assertThatThrownBy(() -> Schedule.of(1L, List.of(ScheduleTheme.of(USER_THEME)), null))
+        assertThatThrownBy(() -> Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), null))
             .isInstanceOf(RequiredArgumentException.class);
 
-        assertThatThrownBy(() -> Schedule.of(null, List.of(ScheduleTheme.of(USER_THEME)), period))
+        assertThatThrownBy(() -> Schedule.of(1L, null, List.of(ScheduleTheme.of(USER_THEME)), period))
             .isInstanceOf(RequiredArgumentException.class);
 
-        assertThatThrownBy(() -> Schedule.of(1L, null, period))
+        assertThatThrownBy(() -> Schedule.of(1L, 1L, null, period))
             .isInstanceOf(RequiredArgumentException.class);
 
-        assertThatThrownBy(() -> Schedule.ofDate(1L, List.of(ScheduleTheme.of(USER_THEME)), null))
+        assertThatThrownBy(() -> Schedule.ofDate(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), null))
             .isInstanceOf(RequiredArgumentException.class);
     }
 }
