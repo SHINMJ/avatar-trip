@@ -3,7 +3,10 @@ package com.avatar.trip.plan.schedule.domain;
 import com.avatar.trip.plan.common.domain.Days;
 import com.avatar.trip.plan.exception.WrongDateException;
 import java.util.Objects;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +18,12 @@ public final class Period {
     private static final String NIGHT = "박";
     private static final String DAYS = "일";
 
+    @Embedded
+    @AttributeOverride(name = "days", column = @Column(name = "night"))
     private Days night;
+
+    @Embedded
+    @AttributeOverride(name = "days", column = @Column(name = "day"))
     private Days day;
 
     private Period(Days night, Days day) {

@@ -2,10 +2,17 @@ package com.avatar.trip.plan.common.domain;
 
 import com.avatar.trip.plan.exception.WrongDateException;
 import java.util.Objects;
+import javax.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-public final class Days {
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Embeddable
+public class Days {
 
-    private final Integer days;
+    private Integer days;
 
     private Days(int days){
         this.days = days;
