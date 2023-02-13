@@ -8,16 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.StringUtils;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,19 +32,20 @@ public class Party extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Permission permission;
 
-    private Long scheduleId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schedule schedule;
 
     private Boolean send = Boolean.FALSE;
 
-    private Party(PhoneNumber phoneNumber, Permission permission, Long scheduleId) {
-        validate(phoneNumber, permission, scheduleId);
+    private Party(PhoneNumber phoneNumber, Permission permission, Schedule schedule) {
+        validate(phoneNumber, permission, schedule);
         this.phoneNumber = phoneNumber;
         this.permission = permission;
-        this.scheduleId = scheduleId;
+        this.schedule = schedule;
     }
 
-    public static Party of(PhoneNumber phoneNumber, Permission permission, Long scheduleId){
-        return new Party(phoneNumber, permission, scheduleId);
+    public static Party of(PhoneNumber phoneNumber, Permission permission, Schedule schedule){
+        return new Party(phoneNumber, permission, schedule);
     }
 
     public void setUserId(Long userId){
@@ -58,7 +56,11 @@ public class Party extends BaseEntity {
         this.send = Boolean.TRUE;
     }
 
-    private void validate(PhoneNumber phoneNumber, Permission permission, Long scheduleId) {
+    public void updatePermission(Permission permission) {
+        this.permission = permission;
+    }
+
+    private void validate(PhoneNumber phoneNumber, Permission permission, Schedule schedule) {
         if (phoneNumber == null){
             throw new RequiredArgumentException("휴대폰 번호");
         }
@@ -67,7 +69,7 @@ public class Party extends BaseEntity {
             throw new RequiredArgumentException("권한레벨");
         }
 
-        if(scheduleId == null){
+        if(schedule == null){
             throw new RequiredArgumentException("일정");
         }
     }
@@ -88,4 +90,5 @@ public class Party extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

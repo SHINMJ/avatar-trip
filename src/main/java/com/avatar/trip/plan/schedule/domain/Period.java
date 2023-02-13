@@ -23,7 +23,7 @@ public final class Period {
     private Days night;
 
     @Embedded
-    @AttributeOverride(name = "days", column = @Column(name = "day"))
+    @AttributeOverride(name = "days", column = @Column(name = "days"))
     private Days day;
 
     private Period(Days night, Days day) {

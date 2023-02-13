@@ -4,19 +4,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.avatar.trip.plan.exception.PhoneNumberException;
+import com.avatar.trip.plan.common.domain.Days;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
+import com.avatar.trip.plan.schedule.domain.Period;
+import com.avatar.trip.plan.schedule.domain.Schedule;
+import com.avatar.trip.plan.schedule.domain.ScheduleTheme;
+import com.avatar.trip.plan.theme.domain.Theme;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
 class PartyTest {
+    private static final List<ScheduleTheme> THEMES = List.of(ScheduleTheme.of(Theme.of("테마", 1L)));
+    private static final Schedule SCHEDULE = Schedule.of(1L, 1L, THEMES, Period.of(Days.valueOf(1),Days.valueOf(2)));
+
 
     @Test
     void created() {
-        Party party = Party.of(PhoneNumber.valueOf("010-1111-1111"), Permission.EDIT, 1L);
+        Party party = Party.of(PhoneNumber.valueOf("010-1111-1111"), Permission.EDIT, SCHEDULE);
 
         assertThat(party.getSend()).isFalse();
     }
@@ -25,20 +32,20 @@ class PartyTest {
     @ParameterizedTest
     @NullSource
     void created_failed(Object input) {
-        assertThatThrownBy(() -> Party.of((PhoneNumber) input, Permission.EDIT, 1L))
+        assertThatThrownBy(() -> Party.of((PhoneNumber) input, Permission.EDIT, SCHEDULE))
             .isInstanceOf(RequiredArgumentException.class);
 
-        assertThatThrownBy(() -> Party.of(PhoneNumber.valueOf("01011111111"), (Permission) input, 1L))
+        assertThatThrownBy(() -> Party.of(PhoneNumber.valueOf("01011111111"), (Permission) input, SCHEDULE))
             .isInstanceOf(RequiredArgumentException.class);
 
         assertThatThrownBy(() -> Party.of(PhoneNumber.valueOf("01011111111"), Permission.EDIT,
-            (Long) input))
+            (Schedule) input))
             .isInstanceOf(RequiredArgumentException.class);
     }
 
     @Test
     void setUserId() {
-        Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.EDIT, 1L);
+        Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.EDIT, SCHEDULE);
 
         assertThat(party.getUserId()).isNull();
 
@@ -49,7 +56,7 @@ class PartyTest {
 
     @Test
     void sendSMS() {
-        Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.EDIT, 1L);
+        Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.EDIT, SCHEDULE);
 
         assertThat(party.getSend()).isFalse();
 
@@ -57,5 +64,16 @@ class PartyTest {
 
         assertThat(party.getSend()).isTrue();
 
+    }
+
+    @Test
+    void updatePermission() {
+        Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.EDIT, SCHEDULE);
+
+        assertThat(party.getPermission()).isEqualTo(Permission.EDIT);
+
+        party.updatePermission(Permission.READ);
+
+        assertThat(party.getPermission()).isEqualTo(Permission.READ);
     }
 }
