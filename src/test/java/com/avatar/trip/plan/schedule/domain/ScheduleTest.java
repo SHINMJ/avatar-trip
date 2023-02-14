@@ -6,6 +6,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.avatar.trip.plan.common.domain.Days;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
+import com.avatar.trip.plan.exception.UnauthorizedException;
+import com.avatar.trip.plan.party.domain.Party;
+import com.avatar.trip.plan.party.domain.Permission;
+import com.avatar.trip.plan.party.domain.PhoneNumber;
 import com.avatar.trip.plan.theme.domain.Theme;
 import java.time.LocalDate;
 import java.util.List;
@@ -33,7 +37,7 @@ class ScheduleTest {
 
         Schedule schedule = Schedule.ofDate(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), periodDate);
 
-        assertThat(schedule.getPeriod()).isEqualTo(Period.of(Days.valueOf(DATE_BETWEEN-1), Days.valueOf(DATE_BETWEEN)));
+        assertThat(schedule.getPeriod()).isEqualTo(Period.of(Days.valueOf(DATE_BETWEEN), Days.valueOf(DATE_BETWEEN+1)));
     }
 
     @Test
@@ -52,4 +56,28 @@ class ScheduleTest {
         assertThatThrownBy(() -> Schedule.ofDate(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), null))
             .isInstanceOf(RequiredArgumentException.class);
     }
+
+    @Test
+    void canEdit_failed() {
+        Period period = Period.of(Days.valueOf(DATE_BETWEEN-1), Days.valueOf(DATE_BETWEEN));
+
+        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
+
+        assertThatThrownBy(() -> schedule.canEdit(2L))
+            .isInstanceOf(UnauthorizedException.class);
+    }
+
+    @Test
+    void canEdit_failedBecausePermissionREAD() {
+        Period period = Period.of(Days.valueOf(DATE_BETWEEN-1), Days.valueOf(DATE_BETWEEN));
+
+        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
+
+        Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.READ, schedule);
+        party.setUserId(2L);
+
+        assertThatThrownBy(() -> schedule.canEdit(2L))
+            .isInstanceOf(UnauthorizedException.class);
+    }
+
 }

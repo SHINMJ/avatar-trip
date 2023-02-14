@@ -11,6 +11,7 @@ import javax.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -32,7 +33,7 @@ public class PeriodDate {
 
     public Period toPeriod(){
         int between = (int) ChronoUnit.DAYS.between(startDate, endDate);
-        return Period.of(Days.valueOf(between-1), Days.valueOf(between));
+        return Period.of(Days.valueOf(between), Days.valueOf(between+1));
     }
 
     private void validate(LocalDate startDate, LocalDate endDate) {

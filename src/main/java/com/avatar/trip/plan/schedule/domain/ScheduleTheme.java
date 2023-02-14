@@ -76,6 +76,10 @@ public class ScheduleTheme extends BaseEntity {
         this.schedule = null;
     }
 
+    public String getThemeName(){
+        return theme.getThemeName();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

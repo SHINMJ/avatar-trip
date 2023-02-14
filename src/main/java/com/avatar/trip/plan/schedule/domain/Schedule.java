@@ -2,6 +2,8 @@ package com.avatar.trip.plan.schedule.domain;
 
 import com.avatar.trip.plan.common.domain.BaseEntity;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
+import com.avatar.trip.plan.exception.UnauthorizedException;
+import com.avatar.trip.plan.party.domain.Party;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,8 +41,8 @@ public class Schedule extends BaseEntity {
 
     private Long ownerId;
 
-//    @OneToMany(mappedBy = "schedule", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
-//    private List<Party> parties;
+    @Embedded
+    private Parties parties = new Parties();
 
     private Schedule(Long ownerId, Long placeId, List<ScheduleTheme> themes, Period period) {
         validate(ownerId, period, placeId, themes);
@@ -85,6 +87,42 @@ public class Schedule extends BaseEntity {
         if(theme.equalSchedule(this)){
             theme.removeSchedule();
         }
+    }
+
+    public void addParty(Party party){
+        this.parties.addParty(party);
+        if (!party.equalSchedule(this)){
+            party.setSchedule(this);
+        }
+    }
+
+    public boolean containParty(Party party){
+        return this.parties.contains(party);
+    }
+
+    public void removeParty(Party party){
+        this.parties.removeParty(party);
+        if (party.equalSchedule(this)) {
+            party.removeSchedule();
+        }
+    }
+
+    public void canEdit(Long userId) {
+        if (!(this.ownerId.equals(userId) || this.parties.canEdit(userId))){
+            throw new UnauthorizedException("권한이 없어 수정할 수 없습니다.");
+        }
+    }
+
+    public List<String> getThemeNames(){
+        return this.themes.getThemeNames();
+    }
+
+    public String getPeriodString(){
+        return this.period.toString();
+    }
+
+    public void updatePlace(Long placeId) {
+        this.placeId = placeId;
     }
 
     private static void validatePeriodDate(PeriodDate periodDate) {

@@ -3,6 +3,7 @@ package com.avatar.trip.plan.theme.domain;
 import com.avatar.trip.plan.common.domain.BaseEntity;
 import com.avatar.trip.plan.exception.CannotDeleteException;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -60,5 +61,22 @@ public class Theme extends BaseEntity {
 
     public String getThemeName(){
         return this.name.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Theme theme = (Theme) o;
+        return id.equals(theme.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

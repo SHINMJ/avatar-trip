@@ -43,6 +43,7 @@ class PartyTest {
             .isInstanceOf(RequiredArgumentException.class);
     }
 
+    @DisplayName("사용자 id 수정")
     @Test
     void setUserId() {
         Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.EDIT, SCHEDULE);
@@ -54,6 +55,7 @@ class PartyTest {
         assertThat(party.getUserId()).isNotNull();
     }
 
+    @DisplayName("문자 보내기 확인")
     @Test
     void sendSMS() {
         Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.EDIT, SCHEDULE);
@@ -66,6 +68,7 @@ class PartyTest {
 
     }
 
+    @DisplayName("권한 수정")
     @Test
     void updatePermission() {
         Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.EDIT, SCHEDULE);
@@ -75,5 +78,29 @@ class PartyTest {
         party.updatePermission(Permission.READ);
 
         assertThat(party.getPermission()).isEqualTo(Permission.READ);
+    }
+
+    @DisplayName("사용자 아이디가 달라서 편집권한 없음")
+    @Test
+    void canEdit_falseBecauseUserId() {
+        Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.EDIT, SCHEDULE);
+
+        assertFalse(party.edit(1L));
+    }
+
+    @DisplayName("사용자 아이디가 같지만 권한이 READ임")
+    @Test
+    void canEdit_falseBecausePermissionREAD() {
+        Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.READ, SCHEDULE);
+        party.setUserId(1L);
+        assertFalse(party.edit(1L));
+    }
+
+    @DisplayName("편집권한 있음")
+    @Test
+    void canEdit_success() {
+        Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.EDIT, SCHEDULE);
+        party.setUserId(1L);
+        assertTrue(party.edit(1L));
     }
 }

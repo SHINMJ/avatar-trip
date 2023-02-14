@@ -2,6 +2,7 @@ package com.avatar.trip.plan.schedule.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
@@ -28,8 +29,12 @@ public class ScheduleThemes {
     }
 
     public void remove(ScheduleTheme theme) {
-        if(contains(theme)){
-            this.themes.remove(theme);
-        }
+        this.themes.remove(theme);
+    }
+
+    public List<String> getThemeNames() {
+        return this.themes.stream()
+            .map(ScheduleTheme::getThemeName)
+            .collect(Collectors.toList());
     }
 }

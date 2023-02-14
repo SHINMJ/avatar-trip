@@ -60,6 +60,32 @@ public class Party extends BaseEntity {
         this.permission = permission;
     }
 
+
+    public void setSchedule(Schedule schedule) {
+        if (this.schedule != null){
+            this.schedule.removeParty(this);
+        }
+        this.schedule = schedule;
+        if (!schedule.containParty(this)){
+            schedule.addParty(this);
+        }
+    }
+
+    public boolean equalSchedule(Schedule schedule) {
+        return this.schedule.equals(schedule);
+    }
+
+    public void removeSchedule() {
+        if (this.schedule.containParty(this)){
+            this.schedule.removeParty(this);
+        }
+        this.schedule = null;
+    }
+
+    public boolean edit(Long userId) {
+        return isOwner(userId) && this.permission.equals(Permission.EDIT);
+    }
+
     private void validate(PhoneNumber phoneNumber, Permission permission, Schedule schedule) {
         if (phoneNumber == null){
             throw new RequiredArgumentException("휴대폰 번호");
@@ -72,6 +98,10 @@ public class Party extends BaseEntity {
         if(schedule == null){
             throw new RequiredArgumentException("일정");
         }
+    }
+
+    private boolean isOwner(Long userId) {
+        return Objects.equals(this.userId, userId);
     }
 
     @Override
