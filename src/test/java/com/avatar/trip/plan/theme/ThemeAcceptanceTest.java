@@ -65,9 +65,7 @@ public class ThemeAcceptanceTest extends AcceptanceTest {
     public static Long 테마_등록_되어있음(String accessToken, String theme, boolean isAdmin){
         ExtractableResponse<Response> response = 테마_등록_요청(accessToken, theme, isAdmin);
         등록됨(response);
-        String uri = response.header("Location");
-
-        String id = uri.substring(ENDPOINT.length() + 1);
+        String id = getIdFromHeader(response, ENDPOINT.length() + 1);
         return Long.valueOf(id);
     }
 
