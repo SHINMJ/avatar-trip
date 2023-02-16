@@ -74,7 +74,7 @@ class ScheduleServiceTest {
     }
 
     @Test
-    void update() {
+    void updatePlace() {
         Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(THEME_WITH_CHILD)), Period.of(
             Days.valueOf(1), Days.valueOf(2)));
 
