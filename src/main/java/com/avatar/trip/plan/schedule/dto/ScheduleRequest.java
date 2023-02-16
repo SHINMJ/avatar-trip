@@ -27,7 +27,7 @@ public class ScheduleRequest {
         if (startDate != null && endDate != null){
             return Schedule.ofDate(ownerId, placeId, themes, PeriodDate.of(startDate, endDate));
         }
-        return Schedule.of(ownerId, placeId, themes, Period.of(Days.valueOf(night), Days.valueOf(days)));
+        return Schedule.of(ownerId, placeId, themes, Period.of(night, days));
     }
 
 }

@@ -26,19 +26,19 @@ public final class Period {
     @AttributeOverride(name = "days", column = @Column(name = "days"))
     private Days day;
 
-    private Period(Days night, Days day) {
+    private Period(Integer night, Integer day) {
         validate(night, day);
-        this.night = night;
-        this.day = day;
+        this.night = Days.valueOf(night);
+        this.day = Days.valueOf(day);
     }
 
-    private void validate(Days night, Days day) {
-        if (night.greaterThan(day)){
+    private void validate(Integer night, Integer day) {
+        if (night.compareTo(day) > -1){
             throw new WrongDateException("기간을 잘못 입력하셨습니다.");
         }
     }
 
-    public static Period of(Days night, Days day){
+    public static Period of(Integer night, Integer day){
         return new Period(night, day);
     }
 

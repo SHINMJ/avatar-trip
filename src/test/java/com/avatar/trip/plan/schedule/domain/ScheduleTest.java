@@ -26,7 +26,7 @@ class ScheduleTest {
 
     @Test
     void createdWithPeriod() {
-        Period period = Period.of(Days.valueOf(2), Days.valueOf(3));
+        Period period = Period.of(2,3);
 
         Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
     }
@@ -37,12 +37,12 @@ class ScheduleTest {
 
         Schedule schedule = Schedule.ofDate(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), periodDate);
 
-        assertThat(schedule.getPeriod()).isEqualTo(Period.of(Days.valueOf(DATE_BETWEEN), Days.valueOf(DATE_BETWEEN+1)));
+        assertThat(schedule.getPeriod()).isEqualTo(Period.of(DATE_BETWEEN, DATE_BETWEEN+1));
     }
 
     @Test
     void created_failed() {
-        Period period = Period.of(Days.valueOf(DATE_BETWEEN-1), Days.valueOf(DATE_BETWEEN));
+        Period period = Period.of(DATE_BETWEEN-1, DATE_BETWEEN);
 
         assertThatThrownBy(() -> Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), null))
             .isInstanceOf(RequiredArgumentException.class);
@@ -59,7 +59,7 @@ class ScheduleTest {
 
     @Test
     void canEdit_failed() {
-        Period period = Period.of(Days.valueOf(DATE_BETWEEN-1), Days.valueOf(DATE_BETWEEN));
+        Period period = Period.of(DATE_BETWEEN-1, DATE_BETWEEN);
 
         Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
 
@@ -69,7 +69,7 @@ class ScheduleTest {
 
     @Test
     void canEdit_failedBecausePermissionREAD() {
-        Period period = Period.of(Days.valueOf(DATE_BETWEEN-1), Days.valueOf(DATE_BETWEEN));
+        Period period = Period.of(DATE_BETWEEN-1, DATE_BETWEEN);
 
         Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
 
@@ -82,7 +82,7 @@ class ScheduleTest {
 
     @Test
     void canRead_failed() {
-        Period period = Period.of(Days.valueOf(DATE_BETWEEN-1), Days.valueOf(DATE_BETWEEN));
+        Period period = Period.of(DATE_BETWEEN-1, DATE_BETWEEN);
 
         Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
 

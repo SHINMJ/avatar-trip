@@ -45,6 +45,7 @@ public class ScheduleService {
         return ScheduleResponse.of(schedule);
     }
 
+    @Transactional(readOnly = true)
     public ScheduleResponse findResponseById(LoginUser loginUser, Long id) {
         Schedule schedule = findById(id);
 

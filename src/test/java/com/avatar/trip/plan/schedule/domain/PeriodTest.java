@@ -15,22 +15,16 @@ class PeriodTest {
     @ParameterizedTest
     @CsvSource(value = {"1,2", "2,3", "3,4"}, delimiter = ',')
     void created(int night, int day) {
-        Period period = Period.of(Days.valueOf(night), Days.valueOf(day));
+        Period period = Period.of(night, day);
 
         assertThat(period.toString()).isEqualTo(night+"박 "+day+"일");
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    void created_failed_nullOrEmpty(String value) {
-        assertThatThrownBy(() -> Period.of(Days.valueOfString(value), Days.valueOfString(value)))
-            .isInstanceOf(WrongDateException.class);
-    }
 
     @ParameterizedTest
     @CsvSource(value = {"2,1", "3,2", "4,1"}, delimiter = ',')
     void created_failed_nightGreaterThanDays(int night, int day) {
-        assertThatThrownBy(() -> Period.of(Days.valueOf(night), Days.valueOf(day)))
+        assertThatThrownBy(() -> Period.of(night, day))
             .isInstanceOf(WrongDateException.class);
     }
 }

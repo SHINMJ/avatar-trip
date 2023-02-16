@@ -35,7 +35,7 @@ class ScheduleRepositoryTest {
     @Test
     void created() {
         Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(theme)),
-            Period.of(Days.valueOf(1), Days.valueOf(2)));
+            Period.of(1,2));
 
         scheduleRepository.save(schedule);
 
@@ -45,7 +45,7 @@ class ScheduleRepositoryTest {
     @Test
     void update() {
         Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(theme)),
-            Period.of(Days.valueOf(1), Days.valueOf(2)));
+            Period.of(1,2));
 
         Schedule saved = scheduleRepository.save(schedule);
 

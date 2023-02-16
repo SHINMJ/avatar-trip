@@ -75,15 +75,14 @@ class ScheduleServiceTest {
 
     @Test
     void updatePlace() {
-        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(THEME_WITH_CHILD)), Period.of(
-            Days.valueOf(1), Days.valueOf(2)));
+        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(THEME_WITH_CHILD)), Period.of(1,2));
 
         when(loginUser.getId())
             .thenReturn(1L);
         when(scheduleRepository.findById(anyLong()))
             .thenReturn(Optional.of(schedule));
-        when(scheduleRepository.save(any(Schedule.class)))
-            .thenReturn(schedule);
+//        when(scheduleRepository.save(any(Schedule.class)))
+//            .thenReturn(schedule);
 
         ScheduleResponse response = service.updatePlace(loginUser, 1L, 2L);
 
@@ -92,8 +91,7 @@ class ScheduleServiceTest {
 
     @Test
     void findResponseById() {
-        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(THEME_WITH_CHILD)), Period.of(
-            Days.valueOf(1), Days.valueOf(2)));
+        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(THEME_WITH_CHILD)), Period.of(1,2));
 
         when(loginUser.getId())
             .thenReturn(1L);

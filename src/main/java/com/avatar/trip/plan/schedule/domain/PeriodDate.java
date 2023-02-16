@@ -33,7 +33,7 @@ public class PeriodDate {
 
     public Period toPeriod(){
         int between = (int) ChronoUnit.DAYS.between(startDate, endDate);
-        return Period.of(Days.valueOf(between), Days.valueOf(between+1));
+        return Period.of(between, between+1);
     }
 
     private void validate(LocalDate startDate, LocalDate endDate) {

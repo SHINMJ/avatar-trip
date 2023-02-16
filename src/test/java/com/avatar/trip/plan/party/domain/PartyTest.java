@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.NullSource;
 
 class PartyTest {
     private static final List<ScheduleTheme> THEMES = List.of(ScheduleTheme.of(Theme.of("테마", 1L)));
-    private static final Schedule SCHEDULE = Schedule.of(1L, 1L, THEMES, Period.of(Days.valueOf(1),Days.valueOf(2)));
+    private static final Schedule SCHEDULE = Schedule.of(1L, 1L, THEMES, Period.of(1,2));
 
 
     @Test

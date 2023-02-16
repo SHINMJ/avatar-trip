@@ -39,6 +39,6 @@ class PeriodDateTest {
         PeriodDate periodDate = PeriodDate.of(startDate, endDate);
         Period toPeriod = periodDate.toPeriod();
 
-        assertThat(toPeriod).isEqualTo(Period.of(Days.valueOf(9),Days.valueOf(10)));
+        assertThat(toPeriod).isEqualTo(Period.of(10,11));
     }
 }
