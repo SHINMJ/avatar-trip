@@ -80,4 +80,13 @@ class ScheduleTest {
             .isInstanceOf(UnauthorizedException.class);
     }
 
+    @Test
+    void canRead_failed() {
+        Period period = Period.of(Days.valueOf(DATE_BETWEEN-1), Days.valueOf(DATE_BETWEEN));
+
+        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
+
+        assertThatThrownBy(() -> schedule.canRead(2L))
+            .isInstanceOf(UnauthorizedException.class);
+    }
 }

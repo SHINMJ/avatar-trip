@@ -4,17 +4,13 @@ import com.avatar.trip.plan.common.domain.BaseEntity;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
 import com.avatar.trip.plan.exception.UnauthorizedException;
 import com.avatar.trip.plan.party.domain.Party;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -108,9 +104,16 @@ public class Schedule extends BaseEntity {
     }
 
     public void canEdit(Long userId) {
-        if (!(this.ownerId.equals(userId) || this.parties.canEdit(userId))){
+        if (!(isOwner(userId) || this.parties.canEdit(userId))){
             throw new UnauthorizedException("권한이 없어 수정할 수 없습니다.");
         }
+    }
+
+    public boolean canRead(Long userId) {
+        if (!(isOwner(userId) || this.parties.canRead(userId))){
+            throw new UnauthorizedException("권한이 없어 일정을 볼 수 없습니다.");
+        }
+        return false;
     }
 
     public List<String> getThemeNames(){
@@ -154,6 +157,10 @@ public class Schedule extends BaseEntity {
         for (ScheduleTheme theme: themes) {
             addTheme(theme);
         }
+    }
+
+    private boolean isOwner(Long userId){
+        return this.ownerId.equals(userId);
     }
 
     @Override

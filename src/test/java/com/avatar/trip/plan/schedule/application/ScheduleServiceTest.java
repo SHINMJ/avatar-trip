@@ -89,4 +89,19 @@ class ScheduleServiceTest {
 
         assertThat(response.getPlaceId()).isEqualTo(2L);
     }
+
+    @Test
+    void findResponseById() {
+        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(THEME_WITH_CHILD)), Period.of(
+            Days.valueOf(1), Days.valueOf(2)));
+
+        when(loginUser.getId())
+            .thenReturn(1L);
+        when(scheduleRepository.findById(anyLong()))
+            .thenReturn(Optional.of(schedule));
+
+        ScheduleResponse response = service.findResponseById(loginUser, 1L);
+
+        assertThat(response.getThemes()).containsExactly(THEME_WITH_CHILD.getThemeName());
+    }
 }

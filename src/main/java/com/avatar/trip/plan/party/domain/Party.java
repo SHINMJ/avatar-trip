@@ -86,6 +86,10 @@ public class Party extends BaseEntity {
         return isOwner(userId) && this.permission.equals(Permission.EDIT);
     }
 
+    public boolean isOwner(Long userId) {
+        return Objects.equals(this.userId, userId);
+    }
+
     private void validate(PhoneNumber phoneNumber, Permission permission, Schedule schedule) {
         if (phoneNumber == null){
             throw new RequiredArgumentException("휴대폰 번호");
@@ -98,10 +102,6 @@ public class Party extends BaseEntity {
         if(schedule == null){
             throw new RequiredArgumentException("일정");
         }
-    }
-
-    private boolean isOwner(Long userId) {
-        return Objects.equals(this.userId, userId);
     }
 
     @Override

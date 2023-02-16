@@ -45,6 +45,14 @@ public class ScheduleService {
         return ScheduleResponse.of(schedule);
     }
 
+    public ScheduleResponse findResponseById(LoginUser loginUser, Long id) {
+        Schedule schedule = findById(id);
+
+        schedule.canRead(loginUser.getId());
+
+        return ScheduleResponse.of(schedule);
+    }
+
     private Schedule findById(Long id){
         return repository.findById(id)
             .orElseThrow(() -> new NotFoundException("해당 일정을 찾을 수 없습니다."));

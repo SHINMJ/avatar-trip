@@ -35,4 +35,9 @@ public class Parties {
         return this.parties.stream()
             .anyMatch(party -> party.edit(userId));
     }
+
+    public boolean canRead(Long userId) {
+        return this.parties.stream()
+            .anyMatch(party -> party.isOwner(userId));
+    }
 }

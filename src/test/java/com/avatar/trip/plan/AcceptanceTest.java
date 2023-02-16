@@ -53,4 +53,9 @@ public class AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    public static String getIdFromHeader(ExtractableResponse<Response> response, int length){
+        String uri = response.header("Location");
+        return uri.substring(length);
+    }
+
 }
