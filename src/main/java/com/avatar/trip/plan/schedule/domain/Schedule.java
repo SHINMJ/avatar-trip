@@ -4,6 +4,7 @@ import com.avatar.trip.plan.common.domain.BaseEntity;
 import com.avatar.trip.plan.common.domain.Days;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
 import com.avatar.trip.plan.exception.UnauthorizedException;
+import com.avatar.trip.plan.party.domain.Parties;
 import com.avatar.trip.plan.party.domain.Party;
 import java.util.List;
 import java.util.Objects;

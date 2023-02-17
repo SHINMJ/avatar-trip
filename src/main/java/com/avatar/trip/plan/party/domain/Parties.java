@@ -1,4 +1,4 @@
-package com.avatar.trip.plan.schedule.domain;
+package com.avatar.trip.plan.party.domain;
 
 import com.avatar.trip.plan.party.domain.Party;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Embeddable
 public class Parties {
 
