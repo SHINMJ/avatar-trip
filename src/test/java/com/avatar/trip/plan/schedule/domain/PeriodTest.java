@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.avatar.trip.plan.common.domain.Days;
 import com.avatar.trip.plan.exception.WrongDateException;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -26,5 +27,19 @@ class PeriodTest {
     void created_failed_nightGreaterThanDays(int night, int day) {
         assertThatThrownBy(() -> Period.of(night, day))
             .isInstanceOf(WrongDateException.class);
+    }
+
+    @Test
+    void contain() {
+        Period period = Period.of(2, 3);
+
+        assertAll(
+            () -> assertTrue(period.contains(1)),
+            () -> assertTrue(period.contains(2)),
+            () -> assertTrue(period.contains(3)),
+            () -> assertFalse(period.contains(4)),
+            () -> assertFalse(period.contains(0))
+        );
+
     }
 }

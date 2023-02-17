@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public final class Period {
+    private static final int MIN_VALUE = 1;
     private static final String NIGHT = "박";
     private static final String DAYS = "일";
 
@@ -42,6 +43,10 @@ public final class Period {
         return new Period(night, day);
     }
 
+    public boolean contains(Integer days) {
+        return days >= MIN_VALUE && this.day.compareTo(days) >= 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -63,4 +68,5 @@ public final class Period {
     public String toString() {
         return night+NIGHT+" "+day+DAYS;
     }
+
 }

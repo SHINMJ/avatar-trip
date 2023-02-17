@@ -11,23 +11,33 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Days {
+    private static final int MIN_VALUE = 0;
 
     private Integer days;
 
     private Days(int days){
+        validate(days);
         this.days = days;
     }
 
     private Days(String days){
-        this.days = parseInt(days);
+        int parse = parseInt(days);
+        validate(parse);
+        this.days = parse;
     }
 
     public static Days valueOf(int days){
         return new Days(days);
     }
 
-    public static Days valueOfString(String days){
+    public static Days valueOf(String days){
         return new Days(days);
+    }
+
+    private void validate(int days) {
+        if (days < MIN_VALUE){
+            throw new WrongDateException();
+        }
     }
 
     private int parseInt(String input) {
@@ -38,11 +48,8 @@ public class Days {
         }
     }
 
-    public boolean greaterThan(Days day) {
-        if (this.days.compareTo(day.days) > 0){
-            return true;
-        }
-        return false;
+    public int compareTo(Integer days){
+        return this.days.compareTo(days);
     }
 
     @Override
@@ -66,4 +73,5 @@ public class Days {
     public String toString() {
         return days.toString();
     }
+
 }

@@ -1,6 +1,7 @@
 package com.avatar.trip.plan.schedule.domain;
 
 import com.avatar.trip.plan.common.domain.BaseEntity;
+import com.avatar.trip.plan.common.domain.Days;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
 import com.avatar.trip.plan.exception.UnauthorizedException;
 import com.avatar.trip.plan.party.domain.Party;
@@ -126,6 +127,14 @@ public class Schedule extends BaseEntity {
 
     public void updatePlace(Long placeId) {
         this.placeId = placeId;
+    }
+
+    public boolean containDays(Integer days) {
+        return this.period.contains(days);
+    }
+
+    public Days getDays(){
+        return this.period.getDay();
     }
 
     private static void validatePeriodDate(PeriodDate periodDate) {
