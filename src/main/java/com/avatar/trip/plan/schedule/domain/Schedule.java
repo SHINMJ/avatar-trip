@@ -1,18 +1,24 @@
 package com.avatar.trip.plan.schedule.domain;
 
+import com.avatar.trip.plan.common.domain.Amount;
 import com.avatar.trip.plan.common.domain.BaseEntity;
 import com.avatar.trip.plan.common.domain.Days;
+import com.avatar.trip.plan.common.domain.Note;
+import com.avatar.trip.plan.common.domain.SortSeq;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
-import com.avatar.trip.plan.exception.UnauthorizedException;
-import com.avatar.trip.plan.party.domain.Parties;
-import com.avatar.trip.plan.party.domain.Party;
-import java.util.List;
+import com.avatar.trip.plan.exception.WrongDateException;
+import com.avatar.trip.plan.plan.domain.Plan;
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,150 +33,83 @@ public class Schedule extends BaseEntity {
     private Long id;
 
     @Embedded
-    private Period period;
-
-    @Embedded
-    private PeriodDate periodDate;
+    private Days day;
 
     private Long placeId;
 
     @Embedded
-    private ScheduleThemes themes = new ScheduleThemes();
-
-    private Long ownerId;
+    private SortSeq order;
 
     @Embedded
-    private Parties parties = new Parties();
+    private Amount budget;
 
-    private Schedule(Long ownerId, Long placeId, List<ScheduleTheme> themes, Period period) {
-        validate(ownerId, period, placeId, themes);
-        this.ownerId = ownerId;
+    @Embedded
+    private Note note;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "plan_id", foreignKey = @ForeignKey(name = "fk_schedule_plan"))
+    private Plan plan;
+
+    private Schedule(Integer day, Long placeId, Integer order, Plan mainPlan) {
+        validate(day, placeId, order, mainPlan);
+        this.day = Days.valueOf(day);
         this.placeId = placeId;
-        setThemes(themes);
-        this.period = period;
+        this.order = SortSeq.valueOf(order);
+        setPlan(mainPlan);
     }
 
-    private Schedule(Long ownerId, Long placeId, List<ScheduleTheme> themes, Period period, PeriodDate periodDate) {
-        validate(ownerId, period, placeId, themes);
-        this.ownerId = ownerId;
-        this.placeId = placeId;
-        setThemes(themes);
-        this.period = period;
-        this.periodDate = periodDate;
+    public static Schedule of(Integer day, Long placeId, Integer order, Plan mainPlan) {
+        return new Schedule(day, placeId, order, mainPlan);
     }
 
-
-    public static Schedule of(Long ownerId, Long placeId, List<ScheduleTheme> themes, Period period) {
-        return new Schedule(ownerId, placeId, themes, period);
+    public void inputBudget(BigDecimal budget){
+        this.budget = Amount.valueOf(budget);
     }
 
-    public static Schedule ofDate(Long ownerId, Long placeId, List<ScheduleTheme> themes, PeriodDate periodDate) {
-        validatePeriodDate(periodDate);
-        return new Schedule(ownerId, placeId, themes, periodDate.toPeriod(), periodDate);
+    public void canRead(Long userId){
+        this.plan.canRead(userId);
     }
 
-    public void addTheme(ScheduleTheme theme) {
-        themes.addTheme(theme);
-        if(!theme.equalSchedule(this)){
-            theme.setSchedule(this);
+    public void canEdit(Long userId){
+        this.plan.canEdit(userId);
+    }
+
+    public void takeNote(String note){
+        this.note = Note.valueOf(note);
+    }
+
+    public String toStringNote() {
+        return this.note.toString();
+    }
+
+    private void validate(Integer day, Long placeId, Integer order, Plan mainPlan){
+        if (day == null) {
+            throw new RequiredArgumentException("일차");
+        }
+
+        if (placeId == null) {
+            throw new RequiredArgumentException("장소");
+        }
+
+        if(order == null){
+            throw new RequiredArgumentException("순서");
+        }
+
+        if(mainPlan == null){
+            throw new RequiredArgumentException("메인 일정");
+        }
+
+        validateDay(day, mainPlan);
+    }
+
+    private void validateDay(Integer day, Plan mainPlan){
+        if (!mainPlan.containDays(day)){
+            throw new WrongDateException(String.format("일차는 여행기간 내로 입력하세요. (여행기간: %s 일)", mainPlan.getDays()));
         }
     }
 
-    public boolean containTheme(ScheduleTheme theme) {
-        return this.themes.contains(theme);
-    }
-
-    public void removeTheme(ScheduleTheme theme) {
-        this.themes.remove(theme);
-        if(theme.equalSchedule(this)){
-            theme.removeSchedule();
-        }
-    }
-
-    public void addParty(Party party){
-        this.parties.addParty(party);
-        if (!party.equalSchedule(this)){
-            party.setSchedule(this);
-        }
-    }
-
-    public boolean containParty(Party party){
-        return this.parties.contains(party);
-    }
-
-    public void removeParty(Party party){
-        this.parties.removeParty(party);
-        if (party.equalSchedule(this)) {
-            party.removeSchedule();
-        }
-    }
-
-    public void canEdit(Long userId) {
-        if (!(isOwner(userId) || this.parties.canEdit(userId))){
-            throw new UnauthorizedException("권한이 없어 수정할 수 없습니다.");
-        }
-    }
-
-    public boolean canRead(Long userId) {
-        if (!(isOwner(userId) || this.parties.canRead(userId))){
-            throw new UnauthorizedException("권한이 없어 일정을 볼 수 없습니다.");
-        }
-        return false;
-    }
-
-    public List<String> getThemeNames(){
-        return this.themes.getThemeNames();
-    }
-
-    public String getPeriodString(){
-        return this.period.toString();
-    }
-
-    public void updatePlace(Long placeId) {
-        this.placeId = placeId;
-    }
-
-    public boolean containDays(Integer days) {
-        return this.period.contains(days);
-    }
-
-    public Days getDays(){
-        return this.period.getDay();
-    }
-
-    private static void validatePeriodDate(PeriodDate periodDate) {
-        if(periodDate == null){
-            throw new RequiredArgumentException("날짜");
-        }
-    }
-
-    private void validate(Long ownerId, Period period, Long placeId, List<ScheduleTheme> themes) {
-        if (ownerId == null){
-            throw new RequiredArgumentException("사용자");
-        }
-
-        if (period == null){
-            throw new RequiredArgumentException("기간");
-        }
-
-        if(placeId == null){
-            throw new RequiredArgumentException("지역");
-        }
-
-        if(themes == null || themes.size() <= 0){
-            throw new RequiredArgumentException("테마");
-        }
-    }
-
-
-    private void setThemes(List<ScheduleTheme> themes) {
-        for (ScheduleTheme theme: themes) {
-            addTheme(theme);
-        }
-    }
-
-    private boolean isOwner(Long userId){
-        return this.ownerId.equals(userId);
+    private void setPlan(Plan plan) {
+        this.plan = plan;
     }
 
     @Override

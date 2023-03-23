@@ -1,15 +1,13 @@
-package com.avatar.trip.plan.schedule.domain;
+package com.avatar.trip.plan.plan.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.avatar.trip.plan.common.domain.Days;
 import com.avatar.trip.plan.exception.WrongDateException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 class PeriodTest {
 

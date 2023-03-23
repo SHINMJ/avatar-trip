@@ -1,17 +1,14 @@
-package com.avatar.trip.plan.schedule.domain;
+package com.avatar.trip.plan.plan.domain;
 
-import com.avatar.trip.plan.common.domain.Days;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
 import com.avatar.trip.plan.exception.WrongDateException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import javax.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

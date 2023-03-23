@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class Parties {
 
-    @OneToMany(mappedBy = "schedule", cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "plan", cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true, fetch = FetchType.LAZY)
     private final List<Party> parties = new ArrayList<>();
 
     public boolean contains(Party party){

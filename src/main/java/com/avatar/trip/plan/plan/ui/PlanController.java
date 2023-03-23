@@ -1,8 +1,8 @@
-package com.avatar.trip.plan.schedule.ui;
+package com.avatar.trip.plan.plan.ui;
 
-import com.avatar.trip.plan.schedule.application.ScheduleService;
-import com.avatar.trip.plan.schedule.dto.ScheduleRequest;
-import com.avatar.trip.plan.schedule.dto.ScheduleResponse;
+import com.avatar.trip.plan.plan.application.PlanService;
+import com.avatar.trip.plan.plan.dto.PlanRequest;
+import com.avatar.trip.plan.plan.dto.PlanResponse;
 import com.avatar.trip.plan.user.dto.LoginUser;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -17,22 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/schedules")
-public class ScheduleController {
+@RequestMapping("/plans")
+public class PlanController {
 
-    private final ScheduleService service;
+    private final PlanService service;
 
     @PostMapping()
-    public ResponseEntity create(@RequestBody ScheduleRequest request,
+    public ResponseEntity create(@RequestBody PlanRequest request,
         @AuthenticationPrincipal LoginUser loginUser){
-        ScheduleResponse response = service.created(loginUser, request);
-        return ResponseEntity.created(URI.create("/schedules/"+response.getId())).build();
+        PlanResponse response = service.created(loginUser, request);
+        return ResponseEntity.created(URI.create("/plans/"+response.getId())).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ScheduleResponse> findById(@PathVariable Long id,
+    public ResponseEntity<PlanResponse> findById(@PathVariable Long id,
         @AuthenticationPrincipal LoginUser loginUser){
-        ScheduleResponse response = service.findResponseById(loginUser, id);
+        PlanResponse response = service.findResponseById(loginUser, id);
         return ResponseEntity.ok(response);
     }
 }

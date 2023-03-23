@@ -1,4 +1,4 @@
-package com.avatar.trip.plan.schedule.domain;
+package com.avatar.trip.plan.plan.domain;
 
 import com.avatar.trip.plan.common.domain.Days;
 import com.avatar.trip.plan.exception.WrongDateException;

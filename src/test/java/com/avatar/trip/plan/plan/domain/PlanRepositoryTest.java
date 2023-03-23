@@ -1,13 +1,11 @@
-package com.avatar.trip.plan.schedule.domain;
+package com.avatar.trip.plan.plan.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.avatar.trip.plan.common.domain.Days;
 import com.avatar.trip.plan.theme.domain.Theme;
 import com.avatar.trip.plan.theme.domain.ThemeRepository;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +13,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
-@Sql(scripts = "classpath:scripts/scheduleTestSetup.sql")
-class ScheduleRepositoryTest {
+@Sql(scripts = "classpath:scripts/planTestSetup.sql")
+class PlanRepositoryTest {
 
 
     @Autowired
-    private ScheduleRepository scheduleRepository;
+    private PlanRepository planRepository;
 
     @Autowired
     private ThemeRepository themeRepository;
@@ -34,36 +32,36 @@ class ScheduleRepositoryTest {
 
     @Test
     void created() {
-        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(theme)),
+        Plan plan = Plan.of(1L, 1L, List.of(PlanTheme.of(theme)),
             Period.of(1,2));
 
-        scheduleRepository.save(schedule);
+        planRepository.save(plan);
 
-        scheduleRepository.flush();
+        planRepository.flush();
     }
 
     @Test
     void update() {
-        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(theme)),
+        Plan plan = Plan.of(1L, 1L, List.of(PlanTheme.of(theme)),
             Period.of(1,2));
 
-        Schedule saved = scheduleRepository.save(schedule);
+        Plan saved = planRepository.save(plan);
 
-        scheduleRepository.flush();
+        planRepository.flush();
 
         assertThat(saved.getPlaceId()).isEqualTo(1L);
 
         saved.updatePlace(2L);
 
-        Schedule findSchedule = scheduleRepository.findById(saved.getId()).get();
+        Plan findPlan = planRepository.findById(saved.getId()).get();
 
         //쿼리 확인
-        scheduleRepository.flush();
+        planRepository.flush();
 
         assertAll(
-            () -> assertThat(findSchedule.getPlaceId()).isEqualTo(2L),
+            () -> assertThat(findPlan.getPlaceId()).isEqualTo(2L),
             () -> assertThat(saved.getPlaceId()).isEqualTo(2L),
-            () -> assertTrue(findSchedule.equals(saved))
+            () -> assertTrue(findPlan.equals(saved))
         );
 
 

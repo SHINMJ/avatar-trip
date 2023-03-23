@@ -1,4 +1,4 @@
-package com.avatar.trip.plan.schedule;
+package com.avatar.trip.plan.plan;
 
 import static com.avatar.trip.plan.auth.AuthAcceptanceTest.사용자_로그인;
 import static com.avatar.trip.plan.theme.ThemeAcceptanceTest.테마_등록_되어있음;
@@ -6,19 +6,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.avatar.trip.plan.AcceptanceTest;
-import com.avatar.trip.plan.schedule.dto.ScheduleRequest;
+import com.avatar.trip.plan.plan.dto.PlanRequest;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("일정 관리")
-public class ScheduleAcceptanceTest extends AcceptanceTest {
-    private static final String  END_POINT = "/schedules";
+public class PlanAcceptanceTest extends AcceptanceTest {
+    private static final String  END_POINT = "/plans";
 
     @DisplayName("새로운 일정을 생성한다.")
     @Test
@@ -27,7 +26,7 @@ public class ScheduleAcceptanceTest extends AcceptanceTest {
         Long themeId = 테마_등록_되어있음(accessToken, "가족과", false);
         Long placeId = 1L;
 
-        ScheduleRequest request = new ScheduleRequest(placeId, List.of(themeId), 1, 2, null, null);
+        PlanRequest request = new PlanRequest(placeId, List.of(themeId), 1, 2, null, null);
 
         ExtractableResponse<Response> response = 일정_등록_요청(accessToken, request);
 
@@ -44,7 +43,7 @@ public class ScheduleAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static ExtractableResponse<Response> 일정_등록_요청(String accessToken, ScheduleRequest request){
+    public static ExtractableResponse<Response> 일정_등록_요청(String accessToken, PlanRequest request){
         return RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .auth().oauth2(accessToken)

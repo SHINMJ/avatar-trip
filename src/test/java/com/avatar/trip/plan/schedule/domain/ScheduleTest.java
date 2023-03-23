@@ -4,77 +4,85 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.avatar.trip.plan.common.domain.Amount;
 import com.avatar.trip.plan.common.domain.Days;
+import com.avatar.trip.plan.exception.BusinessException;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
 import com.avatar.trip.plan.exception.UnauthorizedException;
-import com.avatar.trip.plan.party.domain.Party;
-import com.avatar.trip.plan.party.domain.Permission;
-import com.avatar.trip.plan.party.domain.PhoneNumber;
+import com.avatar.trip.plan.exception.WrongDateException;
+import com.avatar.trip.plan.plan.domain.Period;
+import com.avatar.trip.plan.plan.domain.Plan;
+import com.avatar.trip.plan.plan.domain.PlanTheme;
 import com.avatar.trip.plan.theme.domain.Theme;
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ScheduleTest {
-
-    static final Theme USER_THEME = Theme.of("아이와", 1L);
-    static final int DATE_BETWEEN = 10;
-    static final LocalDate START_DATE = LocalDate.of(2023, 1, 2);
-    static final LocalDate END_DATE = START_DATE.plusDays(DATE_BETWEEN);
+    private static final Theme THEME = Theme.of("가족과", 1L);
+    private static final Plan MAIN_PLAN = Plan.of(1L, 1L,
+        List.of(PlanTheme.of(THEME)), Period.of(1,2));
 
     @Test
-    void createdWithPeriod() {
-        Period period = Period.of(2,3);
+    void created() {
+        Schedule schedule = Schedule.of(1, 1L, 1, MAIN_PLAN);
 
-        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
+        assertThat(schedule.getDay()).isEqualTo(Days.valueOf(1));
     }
 
     @Test
-    void createdWithPeriodDate() {
-        PeriodDate periodDate = PeriodDate.of(START_DATE, END_DATE);
+    void created_failedBecauseNullArgs() {
 
-        Schedule schedule = Schedule.ofDate(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), periodDate);
+        assertThatThrownBy(() -> Schedule.of(null, 1L, 1, MAIN_PLAN))
+            .isInstanceOf(RequiredArgumentException.class);
 
-        assertThat(schedule.getPeriod()).isEqualTo(Period.of(DATE_BETWEEN, DATE_BETWEEN+1));
+        assertThatThrownBy(() -> Schedule.of(1, null, 1, MAIN_PLAN))
+            .isInstanceOf(RequiredArgumentException.class);
+
+        assertThatThrownBy(() -> Schedule.of(1, 1L, null, MAIN_PLAN))
+            .isInstanceOf(RequiredArgumentException.class);
+
+        assertThatThrownBy(() -> Schedule.of(1, 1L, 1, null))
+            .isInstanceOf(RequiredArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, -2})
+    void created_failedBecauseDay(int input) {
+        assertThatThrownBy(() -> Schedule.of(input, 1L, 1, MAIN_PLAN))
+            .isInstanceOf(WrongDateException.class);
     }
 
     @Test
-    void created_failed() {
-        Period period = Period.of(DATE_BETWEEN-1, DATE_BETWEEN);
+    void created_failedBecauseDayNotBetweenMainSchedule() {
+        assertThatThrownBy(() -> Schedule.of(10, 1L, 1, MAIN_PLAN))
+            .isInstanceOf(WrongDateException.class)
+            .hasMessage(String.format("일차는 여행기간 내로 입력하세요. (여행기간: %s 일)", MAIN_PLAN.getDays()));
+    }
 
-        assertThatThrownBy(() -> Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), null))
-            .isInstanceOf(RequiredArgumentException.class);
+    @ParameterizedTest
+    @ValueSource(ints = {0, -1, -2})
+    void created_failedBecauseOrder(int input) {
+        assertThatThrownBy(() -> Schedule.of(1, 1L, input, MAIN_PLAN))
+            .isInstanceOf(BusinessException.class);
+    }
 
-        assertThatThrownBy(() -> Schedule.of(1L, null, List.of(ScheduleTheme.of(USER_THEME)), period))
-            .isInstanceOf(RequiredArgumentException.class);
+    @Test
+    void inputBudget() {
+        Schedule schedule = Schedule.of(1, 1L, 1, MAIN_PLAN);
 
-        assertThatThrownBy(() -> Schedule.of(1L, 1L, null, period))
-            .isInstanceOf(RequiredArgumentException.class);
+        assertThat(schedule.getBudget()).isNull();
 
-        assertThatThrownBy(() -> Schedule.ofDate(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), null))
-            .isInstanceOf(RequiredArgumentException.class);
+        schedule.inputBudget(BigDecimal.valueOf(10000));
+
+        assertThat(schedule.getBudget()).isEqualTo(Amount.valueOf(10000));
     }
 
     @Test
     void canEdit_failed() {
-        Period period = Period.of(DATE_BETWEEN-1, DATE_BETWEEN);
-
-        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
-
-        assertThatThrownBy(() -> schedule.canEdit(2L))
-            .isInstanceOf(UnauthorizedException.class);
-    }
-
-    @Test
-    void canEdit_failedBecausePermissionREAD() {
-        Period period = Period.of(DATE_BETWEEN-1, DATE_BETWEEN);
-
-        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
-
-        Party party = Party.of(PhoneNumber.valueOf("01011111111"), Permission.READ, schedule);
-        party.setUserId(2L);
+        Schedule schedule = Schedule.of(1, 1L, 1, MAIN_PLAN);
 
         assertThatThrownBy(() -> schedule.canEdit(2L))
             .isInstanceOf(UnauthorizedException.class);
@@ -82,11 +90,20 @@ class ScheduleTest {
 
     @Test
     void canRead_failed() {
-        Period period = Period.of(DATE_BETWEEN-1, DATE_BETWEEN);
-
-        Schedule schedule = Schedule.of(1L, 1L, List.of(ScheduleTheme.of(USER_THEME)), period);
+        Schedule schedule = Schedule.of(1, 1L, 1, MAIN_PLAN);
 
         assertThatThrownBy(() -> schedule.canRead(2L))
             .isInstanceOf(UnauthorizedException.class);
+    }
+
+    @Test
+    void makeANote() {
+        Schedule schedule = Schedule.of(1, 1L, 1, MAIN_PLAN);
+
+        assertThat(schedule.getNote()).isNull();
+
+        schedule.takeNote("note");
+
+        assertThat(schedule.toStringNote()).isEqualTo("note");
     }
 }

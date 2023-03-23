@@ -1,4 +1,4 @@
-package com.avatar.trip.plan.schedule.domain;
+package com.avatar.trip.plan.plan.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,29 +12,29 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
-public class ScheduleThemes {
+public class PlanThemes {
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private final List<ScheduleTheme> themes = new ArrayList<>();
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private final List<PlanTheme> themes = new ArrayList<>();
 
 
-    public void addTheme(ScheduleTheme theme) {
+    public void addTheme(PlanTheme theme) {
         if (!contains(theme)){
             themes.add(theme);
         }
     }
 
-    public boolean contains(ScheduleTheme theme) {
+    public boolean contains(PlanTheme theme) {
         return this.themes.contains(theme);
     }
 
-    public void remove(ScheduleTheme theme) {
+    public void remove(PlanTheme theme) {
         this.themes.remove(theme);
     }
 
     public List<String> getThemeNames() {
         return this.themes.stream()
-            .map(ScheduleTheme::getThemeName)
+            .map(PlanTheme::getThemeName)
             .collect(Collectors.toList());
     }
 }

@@ -1,4 +1,4 @@
-package com.avatar.trip.plan.schedule.domain;
+package com.avatar.trip.plan.plan.domain;
 
 import com.avatar.trip.plan.common.domain.BaseEntity;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
@@ -19,21 +19,21 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class ScheduleTheme extends BaseEntity {
+public class PlanTheme extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne()
-    @JoinColumn(name = "schedule_id", foreignKey = @ForeignKey(name = "fk_schedule_theme_schedule"))
-    private Schedule schedule;
+    @JoinColumn(name = "plan_id", foreignKey = @ForeignKey(name = "fk_plan_theme_plan"))
+    private Plan plan;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "theme_id", foreignKey = @ForeignKey(name = "fk_schedule_theme_theme"))
+    @JoinColumn(name = "theme_id", foreignKey = @ForeignKey(name = "fk_plan_theme_theme"))
     private Theme theme;
 
-    private ScheduleTheme(Theme theme){
+    private PlanTheme(Theme theme){
         validate(theme);
         this.theme = theme;
     }
@@ -44,36 +44,36 @@ public class ScheduleTheme extends BaseEntity {
         }
     }
 
-    public static ScheduleTheme of(Theme theme){
-        return new ScheduleTheme(theme);
+    public static PlanTheme of(Theme theme){
+        return new PlanTheme(theme);
     }
 
-    public boolean equalSchedule(Schedule schedule) {
-        if(this.schedule == null){
+    public boolean equalPlan(Plan plan) {
+        if(this.plan == null){
             return false;
         }
-        return this.schedule.equals(schedule);
+        return this.plan.equals(plan);
     }
 
 
-    public void setSchedule(Schedule schedule) {
-        if(this.schedule != null){
-            this.schedule.removeTheme(this);
+    public void setPlan(Plan plan) {
+        if(this.plan != null){
+            this.plan.removeTheme(this);
         }
 
-        this.schedule = schedule;
+        this.plan = plan;
 
-        if(!this.schedule.containTheme(this)){
-            this.schedule.addTheme(this);
+        if(!this.plan.containTheme(this)){
+            this.plan.addTheme(this);
         }
     }
 
-    public void removeSchedule() {
-        if(this.schedule == null){
+    public void removePlan() {
+        if(this.plan == null){
             return;
         }
-        this.schedule.removeTheme(this);
-        this.schedule = null;
+        this.plan.removeTheme(this);
+        this.plan = null;
     }
 
     public String getThemeName(){
@@ -88,7 +88,7 @@ public class ScheduleTheme extends BaseEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ScheduleTheme that = (ScheduleTheme) o;
+        PlanTheme that = (PlanTheme) o;
         return Objects.equals(id, that.id);
     }
 

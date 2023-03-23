@@ -2,7 +2,7 @@ package com.avatar.trip.plan.party.domain;
 
 import com.avatar.trip.plan.common.domain.BaseEntity;
 import com.avatar.trip.plan.exception.RequiredArgumentException;
-import com.avatar.trip.plan.schedule.domain.Schedule;
+import com.avatar.trip.plan.plan.domain.Plan;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -33,19 +33,19 @@ public class Party extends BaseEntity {
     private Permission permission;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Schedule schedule;
+    private Plan plan;
 
     private Boolean send = Boolean.FALSE;
 
-    private Party(PhoneNumber phoneNumber, Permission permission, Schedule schedule) {
-        validate(phoneNumber, permission, schedule);
+    private Party(PhoneNumber phoneNumber, Permission permission, Plan plan) {
+        validate(phoneNumber, permission, plan);
         this.phoneNumber = phoneNumber;
         this.permission = permission;
-        this.schedule = schedule;
+        this.plan = plan;
     }
 
-    public static Party of(PhoneNumber phoneNumber, Permission permission, Schedule schedule){
-        return new Party(phoneNumber, permission, schedule);
+    public static Party of(PhoneNumber phoneNumber, Permission permission, Plan plan){
+        return new Party(phoneNumber, permission, plan);
     }
 
     public void setUserId(Long userId){
@@ -61,25 +61,25 @@ public class Party extends BaseEntity {
     }
 
 
-    public void setSchedule(Schedule schedule) {
-        if (this.schedule != null){
-            this.schedule.removeParty(this);
+    public void setPlan(Plan plan) {
+        if (this.plan != null){
+            this.plan.removeParty(this);
         }
-        this.schedule = schedule;
-        if (!schedule.containParty(this)){
-            schedule.addParty(this);
+        this.plan = plan;
+        if (!plan.containParty(this)){
+            plan.addParty(this);
         }
     }
 
-    public boolean equalSchedule(Schedule schedule) {
-        return this.schedule.equals(schedule);
+    public boolean equalPlan(Plan plan) {
+        return this.plan.equals(plan);
     }
 
-    public void removeSchedule() {
-        if (this.schedule.containParty(this)){
-            this.schedule.removeParty(this);
+    public void removePlan() {
+        if (this.plan.containParty(this)){
+            this.plan.removeParty(this);
         }
-        this.schedule = null;
+        this.plan = null;
     }
 
     public boolean edit(Long userId) {
@@ -90,7 +90,7 @@ public class Party extends BaseEntity {
         return Objects.equals(this.userId, userId);
     }
 
-    private void validate(PhoneNumber phoneNumber, Permission permission, Schedule schedule) {
+    private void validate(PhoneNumber phoneNumber, Permission permission, Plan plan) {
         if (phoneNumber == null){
             throw new RequiredArgumentException("휴대폰 번호");
         }
@@ -99,7 +99,7 @@ public class Party extends BaseEntity {
             throw new RequiredArgumentException("권한레벨");
         }
 
-        if(schedule == null){
+        if(plan == null){
             throw new RequiredArgumentException("일정");
         }
     }
