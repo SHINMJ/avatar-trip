@@ -23,8 +23,7 @@ public class PlanService {
     private final PlanRepository repository;
     private final ThemeRepository themeRepository;
 
-
-    public PlanResponse created(LoginUser loginUser, PlanRequest request) {
+    public PlanResponse create(LoginUser loginUser, PlanRequest request) {
         List<Theme> themes = themeRepository.findByIdIn(request.getThemeIds());
         List<PlanTheme> planThemes = themes.stream().map(PlanTheme::of)
             .collect(Collectors.toList());
@@ -51,6 +50,15 @@ public class PlanService {
         plan.canRead(loginUser.getId());
 
         return PlanResponse.of(plan);
+    }
+
+    @Transactional(readOnly = true)
+    public Plan findPlanById(LoginUser loginUser, Long id) {
+        Plan plan = findById(id);
+
+        plan.canRead(loginUser.getId());
+
+        return plan;
     }
 
     private Plan findById(Long id){

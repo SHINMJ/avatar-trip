@@ -10,6 +10,8 @@ import com.avatar.trip.plan.exception.WrongDateException;
 import com.avatar.trip.plan.plan.domain.Plan;
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,6 +43,7 @@ public class Schedule extends BaseEntity {
     private SortSeq order;
 
     @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "budget"))
     private Amount budget;
 
     @Embedded
@@ -74,12 +77,20 @@ public class Schedule extends BaseEntity {
         this.plan.canEdit(userId);
     }
 
-    public void takeNote(String note){
+    public void takeNotes(String note){
         this.note = Note.valueOf(note);
     }
 
     public String toStringNote() {
         return this.note.toString();
+    }
+
+    public int toIntDay(){
+        return this.day.getDays();
+    }
+
+    public int toIntOrder(){
+        return this.order.getSort();
     }
 
     private void validate(Integer day, Long placeId, Integer order, Plan mainPlan){
@@ -127,5 +138,18 @@ public class Schedule extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Schedule{" +
+            "id=" + id +
+            ", day=" + day +
+            ", placeId=" + placeId +
+            ", order=" + order +
+            ", budget=" + budget +
+            ", note=" + note +
+            ", plan=" + plan.getId() +
+            '}';
     }
 }

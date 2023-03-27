@@ -25,7 +25,7 @@ public class PlanController {
     @PostMapping()
     public ResponseEntity create(@RequestBody PlanRequest request,
         @AuthenticationPrincipal LoginUser loginUser){
-        PlanResponse response = service.created(loginUser, request);
+        PlanResponse response = service.create(loginUser, request);
         return ResponseEntity.created(URI.create("/plans/"+response.getId())).build();
     }
 

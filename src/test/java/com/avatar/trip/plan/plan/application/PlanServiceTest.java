@@ -66,7 +66,7 @@ class PlanServiceTest {
         when(planRepository.save(any(Plan.class)))
             .thenReturn(plan);
 
-        PlanResponse response = service.created(loginUser, request);
+        PlanResponse response = service.create(loginUser, request);
 
         return response;
     }

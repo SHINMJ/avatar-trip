@@ -2,7 +2,6 @@ package com.avatar.trip.plan.schedule.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.avatar.trip.plan.common.domain.Amount;
 import com.avatar.trip.plan.common.domain.Days;
@@ -97,12 +96,12 @@ class ScheduleTest {
     }
 
     @Test
-    void makeANote() {
+    void takeNotes() {
         Schedule schedule = Schedule.of(1, 1L, 1, MAIN_PLAN);
 
         assertThat(schedule.getNote()).isNull();
 
-        schedule.takeNote("note");
+        schedule.takeNotes("note");
 
         assertThat(schedule.toStringNote()).isEqualTo("note");
     }
