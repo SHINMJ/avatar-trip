@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
-public class SortSeq {
+public class SortSeq implements Comparable<SortSeq>{
     private static final Integer MIN_VALUE = 1;
 
     private Integer sort;
@@ -53,5 +53,16 @@ public class SortSeq {
     @Override
     public int hashCode() {
         return Objects.hash(sort);
+    }
+
+    @Override
+    public int compareTo(SortSeq o) {
+        if (this.sort < o.sort){
+            return -1;
+        }
+        if (this.sort > o.sort){
+            return 1;
+        }
+        return 0;
     }
 }

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.avatar.trip.plan.AcceptanceTest;
 import com.avatar.trip.plan.plan.dto.PlanRequest;
+import com.avatar.trip.plan.theme.domain.Theme;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -60,5 +61,12 @@ public class PlanAcceptanceTest extends AcceptanceTest {
             .when().get(END_POINT + "/" + id)
             .then().log().all()
             .extract();
+    }
+
+    public static Long 일정등록되어있음(String accessToken, Long placeId, List<Long> themes, int night, int day){
+        PlanRequest request = new PlanRequest(placeId, themes, night, day, null, null);
+        ExtractableResponse<Response> response = 일정_등록_요청(accessToken, request);
+        등록됨(response);
+        return Long.valueOf(getIdFromHeader(response, END_POINT.length()+1));
     }
 }

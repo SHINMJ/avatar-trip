@@ -53,7 +53,7 @@ public class PlanService {
     }
 
     @Transactional(readOnly = true)
-    public Plan findPlanById(LoginUser loginUser, Long id) {
+    public Plan findCanReadPlanById(LoginUser loginUser, Long id) {
         Plan plan = findById(id);
 
         plan.canRead(loginUser.getId());

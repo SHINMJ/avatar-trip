@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.avatar.trip.plan.common.domain.Days;
 import com.avatar.trip.plan.plan.domain.Plan;
 import com.avatar.trip.plan.plan.domain.PlanRepository;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,4 +84,5 @@ class ScheduleRepositoryTest {
         });
 
     }
+
 }

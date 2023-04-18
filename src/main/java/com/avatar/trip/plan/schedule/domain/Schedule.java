@@ -69,6 +69,10 @@ public class Schedule extends BaseEntity {
         this.budget = Amount.valueOf(budget);
     }
 
+    public void modifyOrder(SortSeq sortSeq) {
+        this.order = sortSeq;
+    }
+
     public void canRead(Long userId){
         this.plan.canRead(userId);
     }
@@ -82,7 +86,7 @@ public class Schedule extends BaseEntity {
     }
 
     public String toStringNote() {
-        return this.note.toString();
+        return this.note == null ? "" : this.note.toString();
     }
 
     public int toIntDay(){
@@ -91,6 +95,14 @@ public class Schedule extends BaseEntity {
 
     public int toIntOrder(){
         return this.order.getSort();
+    }
+
+    public BigDecimal toDecimalBudget() {
+        return this.budget == null ? BigDecimal.ZERO : this.budget.getAmount();
+    }
+
+    public boolean equalsOrder(SortSeq sortSeq) {
+        return this.order.equals(sortSeq);
     }
 
     private void validate(Integer day, Long placeId, Integer order, Plan mainPlan){
@@ -152,4 +164,5 @@ public class Schedule extends BaseEntity {
             ", plan=" + plan.getId() +
             '}';
     }
+
 }
